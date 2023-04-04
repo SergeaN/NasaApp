@@ -6,4 +6,11 @@
     </style>
 
     <style name="Theme.NasaApp" parent="Base.Theme.NasaApp" />
+
+    <style name="MyInputOutlined" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+    </style>
 </resources>

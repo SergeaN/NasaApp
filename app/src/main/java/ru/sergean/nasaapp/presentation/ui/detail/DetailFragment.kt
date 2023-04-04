@@ -8,7 +8,6 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.appComponent
-import ru.sergean.nasaapp.databinding.FragmentConfirmationBinding
 import ru.sergean.nasaapp.databinding.FragmentDetailBinding
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
