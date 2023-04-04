@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "886345707269",
+    "firebase_url": "https://nasaapp-5d4cb-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "nasaapp-5d4cb",
+    "storage_bucket": "nasaapp-5d4cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886345707269:android:1bde912e5dfe66d9c6916c",
+        "android_client_info": {
+          "package_name": "ru.sergean.nasaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "886345707269-oa94a1t6fslmp8a84shvlkq94hvunl9f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ru.sergean.nasaapp",
+            "certificate_hash": "2887c1afff2c2593e6a55ee52daf0baa6b183cfb"
+          }
+        },
+        {
+          "client_id": "886345707269-kumno6gil1d506nieirg6frcdmsmldoa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGi50idJvMtfJ1LaO-f4RmjEwOUoGgkx4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "886345707269-kumno6gil1d506nieirg6frcdmsmldoa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
