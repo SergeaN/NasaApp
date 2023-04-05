@@ -4,9 +4,8 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import ru.sergean.nasaapp.MainActivity
+import ru.sergean.nasaapp.presentation.ui.main.MainActivity
 import ru.sergean.nasaapp.presentation.ui.confirmation.ConfirmationFragment
-import ru.sergean.nasaapp.presentation.ui.container.ContainerFragment
 import ru.sergean.nasaapp.presentation.ui.detail.DetailFragment
 import ru.sergean.nasaapp.presentation.ui.favorites.FavoritesFragment
 import ru.sergean.nasaapp.presentation.ui.home.HomeFragment
@@ -16,12 +15,11 @@ import ru.sergean.nasaapp.presentation.ui.registration.RegistrationFragment
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+@Singleton
 @Component(modules = [AppModule::class])
 interface AppComponent {
 
     fun inject(activity: MainActivity)
-
-    fun inject(fragment: ContainerFragment)
 
     fun inject(fragment: IntroFragment)
 
@@ -41,12 +39,11 @@ interface AppComponent {
 
         fun build(): AppComponent
     }
-
 }
 
 @Module(includes = [NetworkModule::class, DatabaseModule::class])
 class AppModule
 
+@Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.CONSTRUCTOR)
 @Qualifier
 annotation class ApplicationContext
-

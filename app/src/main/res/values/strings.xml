@@ -1,12 +1,45 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">NasaApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="search_hint">e.g. Moon</string>
 
     <string name="home">Home</string>
     <string name="favorites">Favorites</string>
-    <string name="settings">Settings</string>
     <string name="email">Email</string>
     <string name="phone_number">Phone number</string>
     <string name="password">Password</string>
+
+    <string name="continue_word">Continue</string>
+    <string name="name">Name</string>
+
+
+    <string name="invalid_code">Invalid code</string>
+    <string name="unknown_error">Unknown error. Please try again later.</string>
+
+    <string name="name_error_empty">Name is empty</string>
+    <string name="name_error_blank">Name is blank</string>
+
+    <string name="email_error">Incorrect email</string>
+    <string name="phone_error">Phone error</string>
+    <string name="password_error">Incorrect password</string>
+    <string name="sign_in_to_nasa_app">Sign in to Nasa App</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+
+    <string name="didn_t_receive_code">Didn\'t receive code?</string>
+    <string name="resend">Resend</string>
+
+    <string name="confirm_number">Confirm Number</string>
+
+
+    <string name="sending_code">Отправляем код на ваш номер телефона</string>
+
+
+    <string name="sun_text">sun_textsun_textsun_textsun_textsun_textsun_text</string>
+    <string name="earth_text">earth_textearth_textearth_textearth_textearth_textearth_textearth_text</string>
+    <string name="saturn_text">saturn_textsaturn_textsaturn_textsaturn_text</string>
 
 
 </resources>

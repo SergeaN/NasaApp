@@ -1,5 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.NasaApp.Night" parent="Theme.Material3.DayNight.NoActionBar">
-
+    <style name="Base.V24.Night.Theme.NasaApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:textColor">@color/primary_dark</item>
+        <item name="textAllCaps">true</item>
     </style>
+
+    <style name="Base.Theme.NasaApp" parent="Base.V24.Night.Theme.NasaApp">
+    </style>
+
 </resources>

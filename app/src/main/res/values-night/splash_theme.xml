@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Base.V24.Night.Theme.NasaApp.SplashScreen" parent="Base.V24.Theme.NasaApp.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary_dark</item>
+        <item name="android:statusBarColor" >@color/primary_dark</item>
+        <item name="android:navigationBarColor">@color/primary_dark</item>
+    </style>
+
+    <style name="Base.Theme.NasaApp.SplashScreen" parent="Base.V24.Night.Theme.NasaApp.SplashScreen"/>
+
+</resources>

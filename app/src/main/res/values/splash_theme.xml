@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.NasaApp.SplashScreen" parent="Base.Theme.NasaApp.SplashScreen" />
+
+    <style name="Base.Theme.NasaApp.SplashScreen" parent="Base.V24.Theme.NasaApp.SplashScreen" />
+
+    <style name="Base.V24.Theme.NasaApp.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <item name="windowSplashScreenAnimationDuration">3000</item>
+        <item name="postSplashScreenTheme">@style/Theme.NasaApp</item>
+
+        <!-- Status bar and Nav bar configs -->
+        <item name="android:statusBarColor" >@color/primary</item>
+        <item name="android:navigationBarColor">@color/primary</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.NasaApp.Header" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="textAllCaps">true</item>
+    </style>
+
+</resources>

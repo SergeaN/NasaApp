@@ -3,6 +3,7 @@ package ru.sergean.nasaapp
 import android.app.Application
 import android.content.Context
 import ru.sergean.nasaapp.di.AppComponent
+import ru.sergean.nasaapp.di.DaggerAppComponent
 
 const val TAG = "debig"
 
@@ -13,7 +14,9 @@ class NasaApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-       // appComponent = DaggerAppComponent.builder().build()
+        appComponent = DaggerAppComponent.builder()
+            .applicationContext(context = this)
+            .build()
     }
 
 }
