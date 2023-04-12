@@ -60,6 +60,14 @@ class NetworkModule {
 
     @Provides
     @Singleton
+    fun provideHttpLoggingInterceptorInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+    }
+
+    @Provides
+    @Singleton
     fun provideGsonConverterFactory(gson: Gson): Converter.Factory {
         return GsonConverterFactory.create(gson)
     }

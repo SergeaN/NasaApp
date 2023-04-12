@@ -14,6 +14,6 @@ interface ImagesRemoteDataSource {
 
 object MockImagesRemoteDataSource : ImagesRemoteDataSource {
     override suspend fun fetchImages(query: String): NasaResponse {
-        return NasaResponse(collection = CollectionResponse(queryHref = "", emptyList()))
+        return mockNasaResponse
     }
 }

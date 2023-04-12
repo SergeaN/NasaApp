@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.images.local.ImagesLocalDataSource
+import ru.sergean.nasaapp.data.images.local.toImageLocalModel
 import ru.sergean.nasaapp.data.images.remote.ImageRemoteModel
 import ru.sergean.nasaapp.data.images.remote.mapToImageRemote
 import ru.sergean.nasaapp.data.images.remote.ImagesRemoteDataSource
@@ -22,23 +23,26 @@ class ImageRepository @Inject constructor(
         val remoteImages =
             remoteDataSource.fetchImages(query).mapToImageRemote().map { it.toImageModel() }
 
-        saveImages(remoteImages)
+        //saveImages(remoteImages)
 
-        return buildSet {
+        return buildList {
             addAll(localImages)
             addAll(remoteImages)
         }.toList()
     }
 
     suspend fun fetchFavoriteImages(query: String): List<ImageModel> {
-        val localImages = if (query.isBlank() || query.isEmpty()) {
-            localDataSource.fetchFavoriteImages()
-        } else {
-            localDataSource.fetchFavoriteImages(query)
-        }
+        val localImages = localDataSource.fetchFavoriteImages(query)
         return localImages.map { it.toImageModel() }
     }
 
+    suspend fun addToFavorites(nasaId: Int) {
+        localDataSource.addToFavorites(nasaId)
+    }
+
+    suspend fun removeFromFavorites(nasaId: Int) {
+        localDataSource.removeFromFavorites(nasaId)
+    }
 
     private suspend fun saveImages(images: List<ImageModel>) =
         withContext(Dispatchers.IO) {
