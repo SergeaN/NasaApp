@@ -6,5 +6,5 @@ import javax.inject.Inject
 class RemoveFromFavoritesUseCase @Inject constructor(
     private val imageRepository: ImageRepository
 ) {
-    suspend operator fun invoke(nasaId: Int) = imageRepository.removeFromFavorites(nasaId)
+    suspend operator fun invoke(nasaId: String) = imageRepository.removeFromFavorites(nasaId)
 }

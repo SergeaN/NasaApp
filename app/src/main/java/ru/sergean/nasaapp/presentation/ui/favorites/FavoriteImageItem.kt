@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.databinding.ItemFavoritesImageBinding
@@ -14,7 +15,7 @@ import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
 import ru.sergean.nasaapp.presentation.ui.base.adapter.ItemFingerprint
 
 fun ImageModel.mapFavoriteImageItem(): FavoriteImageItem {
-    return FavoriteImageItem(title, description, dateCreated, nasaId, imageUrl, isSaved = false)
+    return FavoriteImageItem(title, description, dateCreated, nasaId, imageUrl, isSaved = true)
 }
 
 data class FavoriteImageItem(
@@ -48,22 +49,19 @@ class FavoritesImageItemFingerprint(
     private val diffUtil = object : DiffUtil.ItemCallback<FavoriteImageItem>() {
 
         override fun areItemsTheSame(
-            oldItem: FavoriteImageItem,
-            newItem: FavoriteImageItem
+            oldItem: FavoriteImageItem, newItem: FavoriteImageItem
         ): Boolean {
             return oldItem.nasaId == newItem.nasaId
         }
 
         override fun areContentsTheSame(
-            oldItem: FavoriteImageItem,
-            newItem: FavoriteImageItem
+            oldItem: FavoriteImageItem, newItem: FavoriteImageItem
         ): Boolean {
             return oldItem == newItem
         }
 
         override fun getChangePayload(
-            oldItem: FavoriteImageItem,
-            newItem: FavoriteImageItem
+            oldItem: FavoriteImageItem, newItem: FavoriteImageItem
         ): Any? {
             if (oldItem.isSaved != newItem.isSaved) return newItem.isSaved
             return super.getChangePayload(oldItem, newItem)
@@ -95,11 +93,12 @@ class FavoritesImageViewHolder(
         binding.run {
             itemImageTitle.text = item.title
 
-            Picasso.get()
-                .load(item.imageUrl)
-                .placeholder(R.drawable.item_image_placeholder)
-                .error(R.drawable.error)
-                .into(itemFavoritesImage)
+            itemFavoritesImage.load(data = item.imageUrl) {
+                crossfade(enable = true)
+                placeholder(R.drawable.item_image_placeholder)
+                error(R.drawable.error)
+                transformations(RoundedCornersTransformation())
+            }
         }
     }
 

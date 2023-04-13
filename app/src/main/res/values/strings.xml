@@ -41,5 +41,6 @@
     <string name="earth_text">earth_textearth_textearth_textearth_textearth_textearth_textearth_text</string>
     <string name="saturn_text">saturn_textsaturn_textsaturn_textsaturn_text</string>
 
+    <string name="images_not_found">No images found</string>
 
 </resources>

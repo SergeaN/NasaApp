@@ -15,7 +15,7 @@ interface NasaDao {
     suspend fun getAll(query: String, isFavorites: Boolean = false): List<ImageLocalModel>
 
     @Query("UPDATE image SET favorite = :isFavorite WHERE nasaId = :nasaId")
-    suspend fun updateImage(nasaId: Int, isFavorite: Boolean)
+    suspend fun updateImage(nasaId: String, isFavorite: Boolean)
 
     @Insert
     suspend fun insertImage(image: ImageLocalModel)

@@ -6,5 +6,5 @@ import javax.inject.Inject
 class AddToFavoritesUseCase @Inject constructor(
     private val imageRepository: ImageRepository
 ) {
-    suspend operator fun invoke(nasaId: Int) = imageRepository.addToFavorites(nasaId)
+    suspend operator fun invoke(nasaId: String) = imageRepository.addToFavorites(nasaId)
 }

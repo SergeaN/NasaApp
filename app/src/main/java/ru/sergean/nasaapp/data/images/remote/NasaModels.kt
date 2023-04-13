@@ -81,7 +81,7 @@ private val mockItemsResponse2 = ItemsResponse(
 )
 
 private val mockItems = buildList {
-    repeat(times = 15){
+    repeat(times = 50){
         add(mockItemsResponse0)
         add(mockItemsResponse1)
         add(mockItemsResponse2)

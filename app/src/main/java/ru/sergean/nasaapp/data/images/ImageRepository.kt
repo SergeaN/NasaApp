@@ -36,11 +36,11 @@ class ImageRepository @Inject constructor(
         return localImages.map { it.toImageModel() }
     }
 
-    suspend fun addToFavorites(nasaId: Int) {
+    suspend fun addToFavorites(nasaId: String) {
         localDataSource.addToFavorites(nasaId)
     }
 
-    suspend fun removeFromFavorites(nasaId: Int) {
+    suspend fun removeFromFavorites(nasaId: String) {
         localDataSource.removeFromFavorites(nasaId)
     }
 

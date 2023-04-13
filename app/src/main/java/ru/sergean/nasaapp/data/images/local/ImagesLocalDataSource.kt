@@ -33,8 +33,8 @@ interface ImagesLocalDataSource {
 
     suspend fun saveImages(images: List<ImageLocalModel>)
 
-    suspend fun addToFavorites(imageId: Int)
-    suspend fun removeFromFavorites(imageId: Int)
+    suspend fun addToFavorites(imageId: String)
+    suspend fun removeFromFavorites(imageId: String)
 }
 
 class ImageLocalDataSourceImpl @Inject constructor(
@@ -55,11 +55,11 @@ class ImageLocalDataSourceImpl @Inject constructor(
 
     override suspend fun saveImages(images: List<ImageLocalModel>) = nasaDao.addAll(images)
 
-    override suspend fun addToFavorites(imageId: Int) {
+    override suspend fun addToFavorites(imageId: String) {
         nasaDao.updateImage(nasaId = imageId, isFavorite = true)
     }
 
-    override suspend fun removeFromFavorites(imageId: Int) {
+    override suspend fun removeFromFavorites(imageId: String) {
         nasaDao.updateImage(nasaId = imageId, isFavorite = false)
     }
 }
@@ -80,11 +80,11 @@ object MockImagesLocalDataSource : ImagesLocalDataSource {
         delay(timeMillis = 6000)
     }
 
-    override suspend fun addToFavorites(imageId: Int) {
+    override suspend fun addToFavorites(imageId: String) {
         delay(timeMillis = 1000)
     }
 
-    override suspend fun removeFromFavorites(imageId: Int) {
+    override suspend fun removeFromFavorites(imageId: String) {
         delay(timeMillis = 1000)
     }
 }
