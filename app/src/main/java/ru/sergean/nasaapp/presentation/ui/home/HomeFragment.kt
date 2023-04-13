@@ -4,45 +4,92 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
+import ru.sergean.nasaapp.data.images.ImageModel
+import ru.sergean.nasaapp.data.images.toImageModel
 import ru.sergean.nasaapp.databinding.FragmentHomeBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.FingerprintAdapter
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
-import ru.sergean.nasaapp.presentation.ui.favorites.FavoriteImageItem
-import ru.sergean.nasaapp.presentation.ui.favorites.FavoritesAction
-import ru.sergean.nasaapp.presentation.ui.favorites.FavoritesEffect
-import ru.sergean.nasaapp.presentation.ui.favorites.FavoritesImageItemFingerprint
+import ru.sergean.nasaapp.presentation.ui.detail.DetailFragment
+import ru.sergean.nasaapp.utils.showSnackbar
+import javax.inject.Inject
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
-    private val viewModel: HomeViewModel by viewModels()
+    @Inject
+    lateinit var viewModelFactory: HomeViewModel.Factory
+
+    private val viewModel: HomeViewModel by viewModels { viewModelFactory }
 
     private val binding by viewBinding(FragmentHomeBinding::bind)
 
     private val items: MutableList<Item> = mutableListOf()
 
-    private var adapter: FingerprintAdapter? = null
-
+    private var fingerprintAdapter: FingerprintAdapter? = null
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(fragment = this)
         super.onAttach(context)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView: ")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = FingerprintAdapter(getFingerprints())
+        fingerprintAdapter = FingerprintAdapter(getFingerprints()).apply {
+            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
 
-        viewModel.dispatch(HomeAction.Refresh)
+        val customLayoutManager = GridLayoutManager(requireContext(), 3).apply {
+            spanSizeLookup = object : SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when (position) {
+                        0 -> 3
+                        else -> 1
+                    }
+                }
+            }
+        }
+
+        binding.imageRecyclerView.run {
+            layoutManager = customLayoutManager
+            adapter = fingerprintAdapter
+        }
+
+        updateItems()
+
+        binding.imageSwipeContainer.setOnRefreshListener {
+            viewModel.dispatch(HomeAction.Refresh(force = true))
+        }
+
+        viewModel.dispatch(HomeAction.Refresh(force = false))
 
         observeState()
         observeSideEffects()
@@ -50,30 +97,60 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun observeState() {
         lifecycleScope.launch {
-            viewModel.observeState().collect {
-                Log.d(TAG, "observeState: $it")
+            viewModel.observeState().flowWithLifecycle(lifecycle).collect { state ->
+                Log.d(TAG, "Home - observeState: $state")
+                when {
+                    state.progress -> {
+                        binding.imageSwipeContainer.isRefreshing = true
+                    }
+                    state.images.isEmpty() -> {
+                        binding.imageSwipeContainer.isRefreshing = false
+                        showSnackbar(R.string.images_not_found)
+                    }
+                    else -> {
+                        binding.imageSwipeContainer.isRefreshing = false
+                        updateItems(state.images)
+                    }
+                }
             }
         }
     }
 
     private fun observeSideEffects() {
         lifecycleScope.launch {
-            viewModel.observeSideEffect().collect {
-                when (it) {
-                    is HomeEffect.Message -> Log.d(TAG, "observeSideEffects: ${it.text}")
+            viewModel.observeSideEffect().flowWithLifecycle(lifecycle).collect { effect ->
+                Log.d(TAG, "Home - observeSideEffects: $effect")
+                when (effect) {
+                    is HomeEffect.Message -> showSnackbar(effect.text)
                 }
             }
         }
     }
 
+    private fun updateItems(images: List<ImageItem> = emptyList()) {
+        items.removeAll { it !is SearchItem }
+        if (items.count { it is SearchItem } == 0) {
+            items.add(index = 0, SearchItem(initText = viewModel.observeState().value.query))
+        }
+        items.addAll(images)
+        fingerprintAdapter?.submitList(items.toList())
+    }
+
     private fun getFingerprints() = listOf(
-        ImageItemFingerprint(::onImageClick)
+        SearchItemFingerprint(lifecycleScope, ::onQueryChanged),
+        ImageItemFingerprint(::onImageClick),
     )
 
     private fun onImageClick(imageItem: ImageItem) {
-        Log.d(TAG, "onImageClick: $imageItem")
-        Toast.makeText(requireContext(), imageItem.imageUrl, Toast.LENGTH_LONG).show()
+        navigateToDetailScreen(imageItem.toImageModel())
     }
 
+    private fun navigateToDetailScreen(image: ImageModel) {
+        val bundle = bundleOf(DetailFragment.ARG_IMAGE to image)
+        findNavController().navigate(R.id.action_homeFragment_to_detailFragment, bundle)
+    }
 
+    private fun onQueryChanged(query: String) {
+        viewModel.dispatch(HomeAction.ChangeQuery(query))
+    }
 }

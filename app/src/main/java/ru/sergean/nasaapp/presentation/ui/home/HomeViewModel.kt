@@ -1,24 +1,24 @@
 package ru.sergean.nasaapp.presentation.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import ru.sergean.nasaapp.data.images.ImageRepository
+import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.domain.FetchImagesUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.Action
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.presentation.ui.base.arch.Effect
 import ru.sergean.nasaapp.presentation.ui.base.arch.State
-import ru.sergean.nasaapp.presentation.ui.favorites.FavoriteImageItem
 import javax.inject.Inject
 
 data class HomeState(
     val progress: Boolean = false,
     val query: String = "",
-    val news: List<ImageItem> = emptyList(),
+    val images: List<ImageItem> = emptyList(),
 ) : State
 
 sealed interface HomeAction : Action {
-    object Refresh : HomeAction
+    data class Refresh(val force: Boolean = false) : HomeAction
     data class ChangeQuery(val query: String) : HomeAction
 }
 
@@ -26,12 +26,12 @@ sealed interface HomeEffect : Effect {
     data class Message(val text: String) : HomeEffect
 }
 
-
 class HomeViewModel(
     private val fetchImagesUseCase: FetchImagesUseCase
 ) : BaseViewModel<HomeState, HomeAction, HomeEffect>(initialState = HomeState()) {
 
     override fun dispatch(action: HomeAction) {
+        Log.d(TAG, "Home - dispatch: $action")
         when (action) {
             is HomeAction.Refresh -> reduce(action)
             is HomeAction.ChangeQuery -> reduce(action)
@@ -39,10 +39,16 @@ class HomeViewModel(
     }
 
     private fun reduce(action: HomeAction.Refresh) {
-        if (viewState.progress) {
-            sideEffect = HomeEffect.Message(text = "In process!")
-        } else {
-            fetchImages(query = viewState.query)
+        when {
+            viewState.progress -> {
+                sideEffect = HomeEffect.Message(text = "In process!")
+            }
+            action.force -> {
+                fetchImages(query = viewState.query)
+            }
+            viewState.images.isEmpty() && viewState.query.isEmpty() -> {
+                fetchImages(query = viewState.query)
+            }
         }
     }
 
@@ -50,7 +56,13 @@ class HomeViewModel(
         if (viewState.progress) {
             sideEffect = HomeEffect.Message(text = "In process!")
         } else {
-            viewState = viewState.copy(query = action.query)
+            val query = action.query.dropWhile { it == ' ' }.dropLastWhile { it == ' ' }
+            Log.d(TAG, "reduce: $query")
+
+            if (query != viewState.query) {
+                viewState = viewState.copy(query = query)
+                //fetchImages(viewState.query)
+            }
         }
     }
 
@@ -58,10 +70,12 @@ class HomeViewModel(
         viewState = viewState.copy(progress = true)
         withViewModelScope {
             viewState = try {
-                val news = fetchImagesUseCase.invoke(query)
-                viewState.copy(progress = false, news = news.map { it.mapToImageItem() })
+                val images = fetchImagesUseCase.invoke(query)
+                Log.d(TAG, "fetchImages: ${images.size}")
+                viewState.copy(progress = false, images = images.map { it.mapToImageItem() })
             } catch (e: Exception) {
                 sideEffect = HomeEffect.Message(text = "Unknown error")
+                Log.e(TAG, "HOME fetchImages:", e)
                 viewState.copy(progress = false)
             }
         }

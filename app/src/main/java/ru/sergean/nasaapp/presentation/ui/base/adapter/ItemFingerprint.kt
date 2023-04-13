@@ -13,10 +13,7 @@ interface ItemFingerprint<V : ViewBinding, I : Item> {
     @LayoutRes
     fun getLayoutId(): Int
 
-    fun getViewHolder(
-        layoutInflater: LayoutInflater,
-        parent: ViewGroup
-    ): BaseViewHolder<V, I>
+    fun getViewHolder(layoutInflater: LayoutInflater, parent: ViewGroup): BaseViewHolder<V, I>
 
     fun getDiffUtil(): DiffUtil.ItemCallback<I>
 

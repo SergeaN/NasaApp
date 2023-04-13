@@ -3,7 +3,9 @@ package ru.sergean.nasaapp.presentation.ui.home
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import com.squareup.picasso.Picasso
+import coil.imageLoader
+import coil.request.ImageRequest
+import coil.transform.RoundedCornersTransformation
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.databinding.ItemImageBinding
@@ -70,10 +72,24 @@ class ImageViewHolder(
 
     override fun onBind(item: ImageItem) {
         super.onBind(item)
-        Picasso.get()
-            .load(item.imageUrl)
-            .placeholder(R.drawable.item_image_placeholder)
-            .error(R.drawable.error)
-            .into(binding.itemImage)
+
+        val context = binding.itemImage.context
+        val imageLoader = context.imageLoader
+        val request = ImageRequest.Builder(context)
+            .crossfade(enable = true)
+            .placeholder(R.drawable.placehodler)
+            .error(R.drawable.placehodler)
+            .transformations(RoundedCornersTransformation())
+            .data(item.imageUrl)
+            .listener(
+                onStart = { binding.root.startShimmer() },
+                onCancel = { binding.root.hideShimmer() },
+                onError = { _, _ -> },
+                onSuccess = { _, _ -> binding.root.hideShimmer() },
+            )
+            .target(binding.itemImage)
+            .build()
+
+        imageLoader.enqueue(request)
     }
 }
