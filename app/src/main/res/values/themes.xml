@@ -5,7 +5,7 @@
     <style name="Base.Theme.NasaApp" parent="Base.V24.Theme.NasaApp" />
 
     <style name="Base.V24.Theme.NasaApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:textColor">@color/green</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 </resources>

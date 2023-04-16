@@ -15,8 +15,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideImagesLocalDataSource(dataSource: ImageLocalDataSourceImpl): ImagesLocalDataSource {
-        return MockImagesLocalDataSource
-        //return dataSource
+        //return MockImagesLocalDataSource
+        return dataSource
     }
 
     @Provides

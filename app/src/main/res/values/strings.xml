@@ -14,6 +14,8 @@
     <string name="continue_word">Continue</string>
     <string name="name">Name</string>
 
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="remove_to_favorites">Remove to favorites</string>
 
     <string name="invalid_code">Invalid code</string>
     <string name="unknown_error">Unknown error. Please try again later.</string>
@@ -42,5 +44,12 @@
     <string name="saturn_text">saturn_textsaturn_textsaturn_textsaturn_text</string>
 
     <string name="images_not_found">No images found</string>
+
+    <string name="detail_placeholder">As scientists developed better instruments, they continued to learn more about the structure and composition of the rings. Saturn actually has many rings made of billions of particles of ice and rock, ranging in size from a grain of sugar to the size of a house. The particles are believed to be debris left over from comets, asteroids or shattered moons. A 2016 study also suggested the rings may be the carcasses of dwarf planets.
+
+The largest ring spans 7,000 times the diameter of the planet. The main rings are typically only about 30 feet (9 meters) thick, but the Cassini-Huygens spacecraft revealed vertical formations in some of the rings, with particles piling up in bumps and ridges more than 2 miles (3 km) high.
+
+The rings are named alphabetically in the order they were discovered. The main rings, working out from the planet, are known as C, B and A. The innermost is the extremely faint D ring, while the outermost to date, revealed in 2009, is so big that it could fit a billion Earths within it. The Cassini Division, a gap some 2,920 miles (4,700 km) wide, separates rings B and A.</string>
+    <string name="date_placeholder">24.09.2009</string>
 
 </resources>

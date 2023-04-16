@@ -1,5 +1,6 @@
 package ru.sergean.nasaapp.presentation.ui.favorites
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import ru.sergean.nasaapp.R
+import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.databinding.ItemFavoritesImageBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.BaseViewHolder
@@ -92,7 +94,7 @@ class FavoritesImageViewHolder(
         super.onBind(item)
         binding.run {
             itemImageTitle.text = item.title
-
+            imageSaveButton.setChecked(item.isSaved)
             itemFavoritesImage.load(data = item.imageUrl) {
                 crossfade(enable = true)
                 placeholder(R.drawable.item_image_placeholder)
@@ -109,6 +111,7 @@ class FavoritesImageViewHolder(
     }
 
     private fun ImageView.setChecked(isChecked: Boolean) {
+        Log.d(TAG, "setChecked: $isChecked")
         val icon = when (isChecked) {
             true -> R.drawable.ic_bookmark_fill_24
             false -> R.drawable.ic_bookmark_border_24

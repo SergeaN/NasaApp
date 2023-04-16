@@ -14,10 +14,23 @@ data class ImageModel(
     val dateCreated: String,
     val nasaId: String,
     val imageUrl: String,
-) : Parcelable
+    val isFavorite: Boolean = false,
+) : Parcelable, Comparable<ImageModel> {
+
+    override fun hashCode() = nasaId.hashCode()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        if (nasaId != (other as ImageModel).nasaId) return false
+        return true
+    }
+
+    override fun compareTo(other: ImageModel) = dateCreated.compareTo(other.dateCreated)
+}
 
 fun ImageLocalModel.toImageModel() =
-    ImageModel(title, description, dateCreated, nasaId, imageUrl)
+    ImageModel(title, description, dateCreated, nasaId, imageUrl, isFavorite)
 
 fun ImageRemoteModel.toImageModel() =
     ImageModel(title, description, dateCreated, nasaId, imageUrl)
@@ -25,6 +38,7 @@ fun ImageRemoteModel.toImageModel() =
 fun ImageItem.toImageModel() = ImageModel(
     title, description, dateCreated, nasaId, imageUrl
 )
+
 fun FavoriteImageItem.toImageModel() = ImageModel(
     title, description, dateCreated, nasaId, imageUrl
 )

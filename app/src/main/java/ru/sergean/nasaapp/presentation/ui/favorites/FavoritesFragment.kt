@@ -2,6 +2,7 @@ package ru.sergean.nasaapp.presentation.ui.favorites
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
+import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.data.images.toImageModel
@@ -127,7 +129,10 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
-                    viewModel.dispatch(FavoritesAction.RemoveFromFavorites(item.nasaId))
+                    Log.d(TAG, "onDismissed: $event")
+                    if (event != DISMISS_EVENT_ACTION) {
+                        viewModel.dispatch(FavoritesAction.RemoveFromFavorites(item.nasaId))
+                    }
                 }
             })
             .show()

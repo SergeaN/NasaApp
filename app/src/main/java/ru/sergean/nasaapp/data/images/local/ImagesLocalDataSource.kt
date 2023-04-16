@@ -31,6 +31,7 @@ interface ImagesLocalDataSource {
     suspend fun fetchAllImages(query: String): List<ImageLocalModel>
     suspend fun fetchFavoriteImages(query: String): List<ImageLocalModel>
 
+    suspend fun getImage(imageId: String): ImageLocalModel?
     suspend fun saveImages(images: List<ImageLocalModel>)
 
     suspend fun addToFavorites(imageId: String)
@@ -55,6 +56,8 @@ class ImageLocalDataSourceImpl @Inject constructor(
 
     override suspend fun saveImages(images: List<ImageLocalModel>) = nasaDao.addAll(images)
 
+    override suspend fun getImage(imageId: String) = nasaDao.getImage(imageId)
+
     override suspend fun addToFavorites(imageId: String) {
         nasaDao.updateImage(nasaId = imageId, isFavorite = true)
     }
@@ -65,6 +68,10 @@ class ImageLocalDataSourceImpl @Inject constructor(
 }
 
 object MockImagesLocalDataSource : ImagesLocalDataSource {
+
+    override suspend fun getImage(imageId: String): ImageLocalModel? {
+        return null
+    }
 
     override suspend fun fetchAllImages(query: String): List<ImageLocalModel> {
         //delay(timeMillis = 2000)

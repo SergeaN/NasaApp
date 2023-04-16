@@ -2,13 +2,11 @@ package ru.sergean.nasaapp.data.images
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.images.local.ImagesLocalDataSource
 import ru.sergean.nasaapp.data.images.local.toImageLocalModel
-import ru.sergean.nasaapp.data.images.remote.ImageRemoteModel
 import ru.sergean.nasaapp.data.images.remote.mapToImageRemote
 import ru.sergean.nasaapp.data.images.remote.ImagesRemoteDataSource
 import javax.inject.Inject
@@ -18,17 +16,24 @@ class ImageRepository @Inject constructor(
     private val localDataSource: ImagesLocalDataSource,
 ) {
     suspend fun fetchImages(query: String): List<ImageModel> {
-        val localImages =
+        Log.d(TAG, "fetchImages: $query")
+        val localImages: List<ImageModel> =
             localDataSource.fetchAllImages(query).map { it.toImageModel() }
         val remoteImages =
             remoteDataSource.fetchImages(query).mapToImageRemote().map { it.toImageModel() }
 
-        //saveImages(remoteImages)
+        saveImages(remoteImages)
 
-        return buildList {
+        Log.d(TAG, "Local: ${localImages.size}")
+        Log.d(TAG, "Remote: ${remoteImages.size}")
+
+        val resultSet = buildSet {
             addAll(localImages)
             addAll(remoteImages)
-        }.toList()
+        }.sortedBy { it.dateCreated }
+
+        Log.d(TAG, "Result: ${resultSet.size}")
+        return resultSet.toList()
     }
 
     suspend fun fetchFavoriteImages(query: String): List<ImageModel> {
@@ -44,11 +49,16 @@ class ImageRepository @Inject constructor(
         localDataSource.removeFromFavorites(nasaId)
     }
 
+    suspend fun getImage(nasaId: String): ImageModel? {
+        return localDataSource.getImage(nasaId)?.toImageModel()
+    }
+
     private suspend fun saveImages(images: List<ImageModel>) =
         withContext(Dispatchers.IO) {
             launch {
                 try {
                     localDataSource.saveImages(images.map { it.toImageLocalModel() })
+                    Log.d(TAG, "saveImages: ")
                 } catch (e: Exception) {
                     Log.e(TAG, "saveImages:", e)
                 }

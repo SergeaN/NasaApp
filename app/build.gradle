@@ -85,6 +85,7 @@ dependencies {
     implementation "com.github.fraggjkee:sms-confirmation-view:1.7.1"
     implementation 'br.com.simplepass:loading-button-android:2.2.0'
 
+
     // Database
     def room_version = "2.5.1"
     implementation "androidx.room:room-runtime:$room_version"

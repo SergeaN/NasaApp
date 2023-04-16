@@ -5,7 +5,7 @@ import androidx.room.*
 @Dao
 interface NasaDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addAll(images: List<ImageLocalModel>)
 
     @Query("SELECT * FROM image WHERE favorite = :isFavorites")
@@ -16,6 +16,9 @@ interface NasaDao {
 
     @Query("UPDATE image SET favorite = :isFavorite WHERE nasaId = :nasaId")
     suspend fun updateImage(nasaId: String, isFavorite: Boolean)
+
+    @Query("SELECT * FROM image WHERE nasaId = :nasaId")
+    suspend fun getImage(nasaId: String): ImageLocalModel?
 
     @Insert
     suspend fun insertImage(image: ImageLocalModel)
