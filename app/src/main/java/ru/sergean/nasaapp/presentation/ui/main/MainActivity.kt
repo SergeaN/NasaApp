@@ -5,7 +5,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         val graph = navController.navInflater.inflate(R.navigation.nav_graph_container)
         graph.setStartDestination(mode.startDestinationId)
-        navController.setGraph(graph, null)
+        navController.setGraph(graph, startDestinationArgs = null)
 
         setupBottomNavView(navController)
     }

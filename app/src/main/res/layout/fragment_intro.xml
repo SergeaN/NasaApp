@@ -29,6 +29,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/next_button"
+        android:fontFamily="@font/noto_sans_medium"
+        style="@style/Widget.Material3.Button.IconButton.Filled"
         android:layout_width="match_parent"
         android:layout_height="@dimen/edit_text_height"
         android:layout_marginHorizontal="32dp"

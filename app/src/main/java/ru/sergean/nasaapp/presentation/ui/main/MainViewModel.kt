@@ -18,8 +18,6 @@ class MainViewModel(private val dataStore: SettingDataStore) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            _mode.value = StartMode.ShowApp
-/*
             dataStore.settingsBundle.collect { settings ->
                 when {
                     settings.isUserLogged -> _mode.value = StartMode.ShowApp
@@ -28,7 +26,6 @@ class MainViewModel(private val dataStore: SettingDataStore) : ViewModel() {
                 }
                 cancel()
             }
-*/
         }
     }
 

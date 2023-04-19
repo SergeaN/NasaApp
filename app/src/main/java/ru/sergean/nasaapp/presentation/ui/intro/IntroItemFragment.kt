@@ -17,7 +17,7 @@ data class IntroItemData(
     @StringRes val textId: Int,
 ) : Serializable
 
-class IntroItemFragment private constructor() : Fragment(R.layout.fragment_intro_item) {
+class IntroItemFragment : Fragment(R.layout.fragment_intro_item) {
 
     private val binding by viewBinding(FragmentIntroItemBinding::bind)
     private val introItemData: IntroItemData by serializableArgs(ARG_DATA)
