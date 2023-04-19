@@ -3,9 +3,11 @@ package ru.sergean.nasaapp.presentation.ui.base.arch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel<S : State, A : Action, E : Effect>(
     initialState: S
@@ -31,7 +33,10 @@ abstract class BaseViewModel<S : State, A : Action, E : Effect>(
     override fun observeState(): StateFlow<S> = _viewState.asStateFlow()
     override fun observeSideEffect(): Flow<E> = _sideEffect
 
-    protected fun withViewModelScope(block: suspend CoroutineScope.() -> Unit) {
-        viewModelScope.launch(block = block)
+    protected fun withViewModelScope(
+        context: CoroutineContext = Dispatchers.Default,
+        block: suspend CoroutineScope.() -> Unit
+    ) {
+        viewModelScope.launch(context = context, block = block)
     }
 }
