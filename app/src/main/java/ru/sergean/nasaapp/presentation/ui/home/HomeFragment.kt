@@ -24,6 +24,10 @@ import ru.sergean.nasaapp.databinding.FragmentHomeBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.FingerprintAdapter
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
 import ru.sergean.nasaapp.presentation.ui.detail.DetailFragment
+import ru.sergean.nasaapp.presentation.ui.home.items.SearchItem
+import ru.sergean.nasaapp.presentation.ui.home.items.ImageItem
+import ru.sergean.nasaapp.presentation.ui.home.items.ImageItemFingerprint
+import ru.sergean.nasaapp.presentation.ui.home.items.SearchItemFingerprint
 import ru.sergean.nasaapp.utils.showSnackbar
 import javax.inject.Inject
 
@@ -45,54 +49,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onAttach(context)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(TAG, "onDestroyView: ")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause: ")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop: ")
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fingerprintAdapter = FingerprintAdapter(getFingerprints()).apply {
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-
-        val customLayoutManager = GridLayoutManager(requireContext(), 3).apply {
-            spanSizeLookup = object : SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return when (position) {
-                        0 -> 3
-                        else -> 1
-                    }
-                }
-            }
-        }
-
-        binding.imageRecyclerView.run {
-            layoutManager = customLayoutManager
-            adapter = fingerprintAdapter
-        }
-
+        initRecyclerView()
         updateItems()
-
-        binding.imageSwipeContainer.setOnRefreshListener {
-            viewModel.dispatch(HomeAction.Refresh(force = true))
-        }
 
         viewModel.dispatch(HomeAction.Refresh(force = false))
 
         observeState()
         observeSideEffects()
+
+        binding.imageSwipeContainer.setOnRefreshListener {
+            viewModel.dispatch(HomeAction.Refresh(force = true))
+        }
     }
 
     private fun observeState() {
@@ -127,6 +97,28 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
+    private fun initRecyclerView() {
+        fingerprintAdapter = FingerprintAdapter(getFingerprints()).apply {
+            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
+
+        val customLayoutManager = GridLayoutManager(requireContext(), 3).apply {
+            spanSizeLookup = object : SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when (position) {
+                        0 -> 3
+                        else -> 1
+                    }
+                }
+            }
+        }
+
+        binding.imageRecyclerView.run {
+            layoutManager = customLayoutManager
+            adapter = fingerprintAdapter
+        }
+    }
+
     private fun updateItems(images: List<ImageItem> = emptyList()) {
         items.removeAll { it !is SearchItem }
         if (items.count { it is SearchItem } == 0) {
@@ -152,5 +144,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun onQueryChanged(query: String) {
         viewModel.dispatch(HomeAction.ChangeQuery(query))
+    }
+
+    companion object {
+        const val ARG_TOKEN = "user_token"
     }
 }

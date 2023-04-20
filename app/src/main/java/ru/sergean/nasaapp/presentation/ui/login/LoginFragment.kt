@@ -19,6 +19,7 @@ import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.databinding.FragmentLoginBinding
+import ru.sergean.nasaapp.presentation.ui.home.HomeFragment
 import ru.sergean.nasaapp.utils.EditTextWatcher
 import ru.sergean.nasaapp.utils.showSnackbar
 import javax.inject.Inject
@@ -39,7 +40,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: Login")
 
         binding.run {
             loginButton.setOnClickListener { viewModel.dispatch(LoginAction.SignIn) }
@@ -106,9 +106,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun navigateToApp(token: String) {
-        Log.d(TAG, "navigateToApp: $token")
-        val arguments = bundleOf("token" to token)
-        findNavController().navigate(R.id.action_loginFragment_to_favoritesFragment, arguments)
+        val arguments = bundleOf(HomeFragment.ARG_TOKEN to token)
+        findNavController().navigate(R.id.action_loginFragment_to_homeFragment, arguments)
     }
 
 }

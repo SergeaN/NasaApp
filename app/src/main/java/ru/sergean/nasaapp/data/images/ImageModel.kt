@@ -4,8 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import ru.sergean.nasaapp.data.images.local.ImageLocalModel
 import ru.sergean.nasaapp.data.images.remote.ImageRemoteModel
-import ru.sergean.nasaapp.presentation.ui.favorites.FavoriteImageItem
-import ru.sergean.nasaapp.presentation.ui.home.ImageItem
+import ru.sergean.nasaapp.presentation.ui.favorites.items.FavoriteImageItem
+import ru.sergean.nasaapp.presentation.ui.home.items.ImageItem
 
 @Parcelize
 data class ImageModel(
@@ -29,16 +29,14 @@ data class ImageModel(
     override fun compareTo(other: ImageModel) = dateCreated.compareTo(other.dateCreated)
 }
 
-fun ImageLocalModel.toImageModel() =
+fun ImageLocalModel.toImageModel(): ImageModel =
     ImageModel(title, description, dateCreated, nasaId, imageUrl, isFavorite)
 
-fun ImageRemoteModel.toImageModel() =
+fun ImageRemoteModel.toImageModel(): ImageModel =
     ImageModel(title, description, dateCreated, nasaId, imageUrl)
 
-fun ImageItem.toImageModel() = ImageModel(
-    title, description, dateCreated, nasaId, imageUrl
-)
+fun ImageItem.toImageModel(): ImageModel =
+    ImageModel(title, description, dateCreated, nasaId, imageUrl)
 
-fun FavoriteImageItem.toImageModel() = ImageModel(
-    title, description, dateCreated, nasaId, imageUrl
-)
+fun FavoriteImageItem.toImageModel(): ImageModel =
+    ImageModel(title, description, dateCreated, nasaId, imageUrl)

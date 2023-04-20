@@ -12,8 +12,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.sergean.nasaapp.data.images.remote.ImagesRemoteDataSource
 import ru.sergean.nasaapp.data.images.remote.MockImagesRemoteDataSource
-import ru.sergean.nasaapp.data.images.remote.NasaInterceptor
 import ru.sergean.nasaapp.data.images.remote.NasaService
+import ru.sergean.nasaapp.data.user.MockUserService
+import ru.sergean.nasaapp.data.user.UserService
+import ru.sergean.nasaapp.data.user.USER_SERVICE_URL
 import javax.inject.Singleton
 
 @Module
@@ -25,6 +27,25 @@ class NetworkModule {
         //return nasaService
         return MockImagesRemoteDataSource
     }
+
+    @Provides
+    @Singleton
+    fun provideUserService(
+        okHttpClient: OkHttpClient,
+        converterFactory: Converter.Factory,
+    ): UserService {
+/*
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl(USER_SERVICE_URL)
+            .addConverterFactory(converterFactory)
+            .build()
+            .create()
+*/
+
+        return MockUserService
+    }
+
 
     @Provides
     @Singleton
@@ -44,18 +65,11 @@ class NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        interceptor: NasaInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             //.addInterceptor(interceptor)
             .addInterceptor(httpLoggingInterceptor)
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideNasaInterceptor(): NasaInterceptor {
-        return NasaInterceptor()
     }
 
     @Provides
@@ -71,7 +85,6 @@ class NetworkModule {
     fun provideGsonConverterFactory(gson: Gson): Converter.Factory {
         return GsonConverterFactory.create(gson)
     }
-
 
     @Provides
     @Singleton

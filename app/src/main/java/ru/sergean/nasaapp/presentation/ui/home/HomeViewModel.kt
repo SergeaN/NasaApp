@@ -4,27 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ru.sergean.nasaapp.TAG
-import ru.sergean.nasaapp.domain.FetchImagesUseCase
-import ru.sergean.nasaapp.presentation.ui.base.arch.Action
+import ru.sergean.nasaapp.domain.images.FetchImagesUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
-import ru.sergean.nasaapp.presentation.ui.base.arch.Effect
-import ru.sergean.nasaapp.presentation.ui.base.arch.State
+import ru.sergean.nasaapp.presentation.ui.home.items.mapToImageItem
 import javax.inject.Inject
-
-data class HomeState(
-    val progress: Boolean = false,
-    val query: String = "",
-    val images: List<ImageItem> = emptyList(),
-) : State
-
-sealed interface HomeAction : Action {
-    data class Refresh(val force: Boolean = false) : HomeAction
-    data class ChangeQuery(val query: String) : HomeAction
-}
-
-sealed interface HomeEffect : Effect {
-    data class Message(val text: String) : HomeEffect
-}
 
 class HomeViewModel(
     private val fetchImagesUseCase: FetchImagesUseCase
@@ -61,7 +44,7 @@ class HomeViewModel(
 
             if (query != viewState.query) {
                 viewState = viewState.copy(query = query)
-                //fetchImages(viewState.query)
+                fetchImages(viewState.query)
             }
         }
     }
@@ -93,5 +76,4 @@ class HomeViewModel(
             throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package ru.sergean.nasaapp.presentation.ui.home
+package ru.sergean.nasaapp.presentation.ui.home.items
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,10 +13,6 @@ import ru.sergean.nasaapp.presentation.ui.base.adapter.BaseViewHolder
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
 import ru.sergean.nasaapp.presentation.ui.base.adapter.ItemFingerprint
 
-fun ImageModel.mapToImageItem(): ImageItem {
-    return ImageItem(title, description, dateCreated, nasaId, imageUrl, isSaved = false)
-}
-
 data class ImageItem(
     val title: String,
     val description: String,
@@ -25,6 +21,10 @@ data class ImageItem(
     val imageUrl: String,
     val isSaved: Boolean,
 ) : Item
+
+fun ImageModel.mapToImageItem(): ImageItem =
+    ImageItem(title, description, dateCreated, nasaId, imageUrl, isSaved = false)
+
 
 class ImageItemFingerprint(
     private val onImageClick: (ImageItem) -> Unit,

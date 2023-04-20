@@ -43,14 +43,6 @@ inline fun <reified T : Serializable> serializableArgs(key: String): ReadOnlyPro
     }
 }
 
-fun <T : Serializable> serializableArgsNonInline(key: String): ReadOnlyProperty<Fragment, T> {
-    return ReadOnlyProperty { thisRef, _ ->
-        val args = thisRef.requireArguments()
-        require(args.containsKey(key)) { "Arguments don't contain key '$key'" }
-        requireNotNull(args.getSerializable(key) as? T)
-    }
-}
-
 fun stringArgs(key: String): ReadOnlyProperty<Fragment, String> {
     return ReadOnlyProperty { thisRef, _ ->
         val args = thisRef.requireArguments()

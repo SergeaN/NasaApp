@@ -1,19 +1,18 @@
-package ru.sergean.nasaapp.presentation.ui.home
+package ru.sergean.nasaapp.presentation.ui.home.items
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DiffUtil
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.databinding.ItemSearchBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.BaseViewHolder
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
 import ru.sergean.nasaapp.presentation.ui.base.adapter.ItemFingerprint
+import ru.sergean.nasaapp.utils.EditTextWatcher
 
-data class SearchItem(val initText: String): Item
+data class SearchItem(var initText: String) : Item
 
 class SearchItemFingerprint(
     private val scope: CoroutineScope,
@@ -48,25 +47,15 @@ class SearchItemFingerprint(
 
 class SearchViewHolder(
     binding: ItemSearchBinding,
-    private val scope: CoroutineScope,
-    private val onQueryChanged: (String) -> Unit,
+    scope: CoroutineScope,
+    onQueryChanged: (String) -> Unit,
 ) : BaseViewHolder<ItemSearchBinding, SearchItem>(binding) {
 
-    private var currentQuery = ""
-
     init {
+        val editTextWatcher = EditTextWatcher(scope)
         binding.searchEditText.doOnTextChanged { text, _, _, _ ->
-            val query = text.toString()
-            if (currentQuery != query) {
-                currentQuery = query
-                scope.launch {
-                    delay(timeMillis = 1000)
-                    if (currentQuery != query) {
-                        return@launch
-                    }
-                    onQueryChanged(currentQuery)
-                }
-            }
+            item.initText = text.toString()
+            editTextWatcher.watch(text, onQueryChanged)
         }
     }
 

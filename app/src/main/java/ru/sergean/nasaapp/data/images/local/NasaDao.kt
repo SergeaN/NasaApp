@@ -11,14 +11,14 @@ interface NasaDao {
     @Query("SELECT * FROM image WHERE favorite = :isFavorites")
     suspend fun getAll(isFavorites: Boolean = false): List<ImageLocalModel>
 
-    @Query("SELECT * FROM image WHERE favorite = :isFavorites AND (title LIKE :query OR description LIKE :query)")
-    suspend fun getAll(query: String, isFavorites: Boolean = false): List<ImageLocalModel>
-
-    @Query("UPDATE image SET favorite = :isFavorite WHERE nasaId = :nasaId")
-    suspend fun updateImage(nasaId: String, isFavorite: Boolean)
+    @Query("SELECT * FROM image WHERE favorite = :isFavorites AND (title LIKE '%' || :query || '%' OR description LIKE '%' || :query || '%')")
+    suspend fun getAllByQuery(query: String, isFavorites: Boolean = false): List<ImageLocalModel>
 
     @Query("SELECT * FROM image WHERE nasaId = :nasaId")
-    suspend fun getImage(nasaId: String): ImageLocalModel?
+    suspend fun getImageById(nasaId: String): ImageLocalModel?
+
+    @Query("UPDATE image SET favorite = :isFavorite WHERE nasaId = :nasaId")
+    suspend fun updateImageById(nasaId: String, isFavorite: Boolean)
 
     @Insert
     suspend fun insertImage(image: ImageLocalModel)

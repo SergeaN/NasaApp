@@ -1,6 +1,8 @@
 package ru.sergean.nasaapp.di
 
 import android.content.Context
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -36,6 +38,14 @@ interface AppComponent {
 
         @BindsInstance
         fun applicationContext(@ApplicationContext context: Context): Builder
+
+/*
+        @BindsInstance
+        fun firebaseAuth(firebaseAuth: FirebaseAuth): Builder
+
+        @BindsInstance
+        fun firebaseDatabase(firebaseDatabase: FirebaseDatabase): Builder
+*/
 
         fun build(): AppComponent
     }

@@ -9,6 +9,7 @@ import ru.sergean.nasaapp.data.images.local.ImagesLocalDataSource
 import ru.sergean.nasaapp.data.images.local.toImageLocalModel
 import ru.sergean.nasaapp.data.images.remote.mapToImageRemote
 import ru.sergean.nasaapp.data.images.remote.ImagesRemoteDataSource
+import ru.sergean.nasaapp.data.images.remote.MockImagesRemoteDataSource
 import javax.inject.Inject
 
 class ImageRepository @Inject constructor(
@@ -17,8 +18,13 @@ class ImageRepository @Inject constructor(
 ) {
     suspend fun fetchImages(query: String): List<ImageModel> {
         Log.d(TAG, "fetchImages: $query")
+
         val localImages: List<ImageModel> =
             localDataSource.fetchAllImages(query).map { it.toImageModel() }
+
+        val remoteSource = remoteDataSource as? MockImagesRemoteDataSource
+        Log.d(TAG, "fetchImages: ${remoteSource?.fetchImages(query = "")}")
+
         val remoteImages =
             remoteDataSource.fetchImages(query).mapToImageRemote().map { it.toImageModel() }
 
