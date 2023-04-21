@@ -1,5 +1,6 @@
 package ru.sergean.nasaapp.presentation.ui.home.items
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,6 +8,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import ru.sergean.nasaapp.R
+import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.databinding.ItemImageBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.BaseViewHolder
@@ -32,7 +34,7 @@ class ImageItemFingerprint(
 
     override fun isRelativeItem(item: Item) = item is ImageItem
 
-    override fun getLayoutId() = R.layout.item_favorites_image
+    override fun getLayoutId() = R.layout.item_image
 
     override fun getViewHolder(
         layoutInflater: LayoutInflater,
@@ -83,8 +85,8 @@ class ImageViewHolder(
             .data(item.imageUrl)
             .listener(
                 onStart = { binding.root.startShimmer() },
-                onCancel = { binding.root.hideShimmer() },
-                onError = { _, _ -> },
+                onCancel = {},
+                onError = { _, _ -> binding.root.hideShimmer() },
                 onSuccess = { _, _ -> binding.root.hideShimmer() },
             )
             .target(binding.itemImage)

@@ -6,7 +6,7 @@
     app:shimmer_highlight_color="@color/primary_dark"
     app:shimmer_base_color="@color/primary_dark"
     app:shimmer_colored="true"
-    android:layout_height="100dp">
+    android:layout_height="130dp">
 
     <ImageView
         android:id="@+id/item_image"

@@ -1,6 +1,7 @@
 package ru.sergean.nasaapp.presentation.ui.home
 
 import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -24,10 +25,8 @@ import ru.sergean.nasaapp.databinding.FragmentHomeBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.FingerprintAdapter
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
 import ru.sergean.nasaapp.presentation.ui.detail.DetailFragment
-import ru.sergean.nasaapp.presentation.ui.home.items.SearchItem
-import ru.sergean.nasaapp.presentation.ui.home.items.ImageItem
-import ru.sergean.nasaapp.presentation.ui.home.items.ImageItemFingerprint
-import ru.sergean.nasaapp.presentation.ui.home.items.SearchItemFingerprint
+import ru.sergean.nasaapp.presentation.ui.home.items.*
+import ru.sergean.nasaapp.utils.dp
 import ru.sergean.nasaapp.utils.showSnackbar
 import javax.inject.Inject
 
@@ -116,6 +115,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.imageRecyclerView.run {
             layoutManager = customLayoutManager
             adapter = fingerprintAdapter
+
+            addItemDecoration(
+                HomeSearchDecorator(horizontalDivider = 16.dp, verticalDivider = 8.dp)
+            )
+
+            addItemDecoration(
+                HomeItemDecorator(innerHorizontalDivider = 2.dp, innerVerticalDivider = 2.dp)
+            )
         }
     }
 

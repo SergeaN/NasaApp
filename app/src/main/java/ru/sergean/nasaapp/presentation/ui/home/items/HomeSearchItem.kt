@@ -1,9 +1,11 @@
 package ru.sergean.nasaapp.presentation.ui.home.items
 
 import android.view.LayoutInflater
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DiffUtil
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.databinding.ItemSearchBinding
@@ -53,14 +55,28 @@ class SearchViewHolder(
 
     init {
         val editTextWatcher = EditTextWatcher(scope)
-        binding.searchEditText.doOnTextChanged { text, _, _, _ ->
-            item.initText = text.toString()
-            editTextWatcher.watch(text, onQueryChanged)
+        binding.run {
+            searchEditText.doOnTextChanged { text, _, _, _ ->
+                item.initText = text.toString()
+                editTextWatcher.watch(text, onQueryChanged)
+            }
+            searchEditText.onFocusChangeListener = OnFocusChangeListener { _, isFocused ->
+                searchInput.setHint(isFocused)
+            }
         }
     }
 
     override fun onBind(item: SearchItem) {
         super.onBind(item)
         binding.searchEditText.setText(item.initText)
+        binding.searchInput.setHint()
+    }
+
+    private fun TextInputLayout.setHint(isFocused: Boolean = false) {
+        hint = when {
+            isFocused -> ""
+            binding.searchEditText.text?.isNotEmpty() == true -> ""
+            else -> resources.getString(R.string.search_hint)
+        }
     }
 }
