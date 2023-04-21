@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -23,6 +24,8 @@ import ru.sergean.nasaapp.databinding.FragmentFavoritesBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.FingerprintAdapter
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
 import ru.sergean.nasaapp.presentation.ui.detail.DetailFragment
+import ru.sergean.nasaapp.presentation.ui.favorites.items.FavoriteImageItem
+import ru.sergean.nasaapp.presentation.ui.favorites.items.FavoritesImageItemFingerprint
 import ru.sergean.nasaapp.utils.showSnackbar
 import javax.inject.Inject
 
@@ -53,11 +56,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             adapter = fingerprintAdapter
         }
 
-        binding.imageSwipeContainer.setOnRefreshListener {
-            viewModel.dispatch(FavoritesAction.Refresh(force = true))
-        }
-
-        viewModel.dispatch(FavoritesAction.Refresh(force = false))
+        viewModel.dispatch(FavoritesAction.Refresh)
 
         observeState()
         observeSideEffects()
@@ -66,16 +65,26 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private fun observeState() {
         lifecycleScope.launch {
             viewModel.observeState().flowWithLifecycle(lifecycle).collect { state ->
+                Log.d(TAG, "observeState: $state")
                 when {
                     state.progress -> {
-                        binding.imageSwipeContainer.isRefreshing = true
+                        binding.run {
+                            favListText.isVisible = false
+                            favProgressBar.isVisible = true
+                        }
                     }
                     state.images.isEmpty() -> {
-                        binding.imageSwipeContainer.isRefreshing = false
-                        showSnackbar(R.string.images_not_found)
+                        binding.run {
+                            favProgressBar.isVisible = false
+                            favListText.isVisible = true
+                            favListText.text = getString(R.string.no_favorite_images_founded)
+                        }
                     }
                     else -> {
-                        binding.imageSwipeContainer.isRefreshing = false
+                        binding.run {
+                            favProgressBar.isVisible = false
+                            favListText.isVisible = false
+                        }
                         updateItems(state.images)
                     }
                 }
@@ -86,6 +95,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private fun observeSideEffects() {
         lifecycleScope.launch {
             viewModel.observeSideEffect().flowWithLifecycle(lifecycle).collect {
+                Log.d(TAG, "observeSideEffects: $it")
                 when (it) {
                     is FavoritesEffect.Message -> showSnackbar(it.text)
                 }
@@ -109,7 +119,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     private fun navigateToDetailScreen(image: ImageModel) {
         val bundle = bundleOf(DetailFragment.ARG_IMAGE to image)
-        findNavController().navigate(R.id.action_homeFragment_to_detailFragment, bundle)
+        findNavController().navigate(R.id.action_favoritesFragment_to_detailFragment, bundle)
     }
 
     private fun onFavoritesClick(item: FavoriteImageItem) {
@@ -121,15 +131,14 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun showRestoreSnackbar(position: Int, item: FavoriteImageItem) {
-        Snackbar.make(binding.imageRecyclerView, "Image was removed", Snackbar.LENGTH_LONG)
-            .setAction("Undo") {
+        Snackbar.make(binding.imageRecyclerView, R.string.image_was_removed, Snackbar.LENGTH_LONG)
+            .setAction(R.string.undo) {
                 items.add(position, item)
                 fingerprintAdapter?.submitList(items.toList())
             }
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
-                    Log.d(TAG, "onDismissed: $event")
                     if (event != DISMISS_EVENT_ACTION) {
                         viewModel.dispatch(FavoritesAction.RemoveFromFavorites(item.nasaId))
                     }
@@ -137,5 +146,4 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             })
             .show()
     }
-
 }

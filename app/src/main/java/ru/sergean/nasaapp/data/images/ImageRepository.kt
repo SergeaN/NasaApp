@@ -22,9 +22,6 @@ class ImageRepository @Inject constructor(
         val localImages: List<ImageModel> =
             localDataSource.fetchAllImages(query).map { it.toImageModel() }
 
-        val remoteSource = remoteDataSource as? MockImagesRemoteDataSource
-        Log.d(TAG, "fetchImages: ${remoteSource?.fetchImages(query = "")}")
-
         val remoteImages =
             remoteDataSource.fetchImages(query).mapToImageRemote().map { it.toImageModel() }
 

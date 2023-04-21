@@ -12,4 +12,8 @@
 
     </style>
 
+    <style name="Widget.NasaApp.BottomNavigationView" parent="Widget.Design.BottomNavigationView">
+        <item name="fontFamily">@font/noto_sans_regular</item>
+    </style>
+
 </resources>

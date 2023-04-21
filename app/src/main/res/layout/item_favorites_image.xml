@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:checkable="true"
+    app:cardBackgroundColor="@color/primary_dark"
     android:layout_margin="8dp"
     android:clickable="true"
     android:focusable="true"
@@ -27,7 +28,7 @@
                 android:scaleType="centerCrop"
                 tools:src="@drawable/saturn" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_save_button"
                 android:layout_margin="16dp"
                 android:layout_gravity="end"
@@ -39,6 +40,7 @@
 
 
         <TextView
+            android:fontFamily="@font/noto_sans_semi_bold"
             android:id="@+id/item_image_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,6 +48,7 @@
             android:layout_marginVertical="8dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textSize="16sp"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             tools:text="Cassini Look at Water on the Moon" />
 

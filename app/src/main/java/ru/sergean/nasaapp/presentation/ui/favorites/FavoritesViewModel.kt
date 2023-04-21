@@ -4,33 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ru.sergean.nasaapp.TAG
-import ru.sergean.nasaapp.domain.AddToFavoritesUseCase
-import ru.sergean.nasaapp.domain.FetchFavoriteImagesUseCase
-import ru.sergean.nasaapp.domain.RemoveFromFavoritesUseCase
-import ru.sergean.nasaapp.presentation.ui.base.arch.Action
+import ru.sergean.nasaapp.domain.images.AddToFavoritesUseCase
+import ru.sergean.nasaapp.domain.images.FetchFavoriteImagesUseCase
+import ru.sergean.nasaapp.domain.images.RemoveFromFavoritesUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
-import ru.sergean.nasaapp.presentation.ui.base.arch.Effect
-import ru.sergean.nasaapp.presentation.ui.base.arch.State
-import ru.sergean.nasaapp.presentation.ui.home.HomeAction
-import ru.sergean.nasaapp.presentation.ui.home.HomeEffect
-import ru.sergean.nasaapp.presentation.ui.home.mapToImageItem
+import ru.sergean.nasaapp.presentation.ui.favorites.items.mapFavoriteImageItem
 import javax.inject.Inject
-
-data class FavoritesState(
-    val progress: Boolean = false,
-    val query: String = "",
-    val images: List<FavoriteImageItem> = emptyList(),
-) : State
-
-sealed interface FavoritesAction : Action {
-    data class Refresh(val force: Boolean = false) : FavoritesAction
-    data class ChangeQuery(val query: String) : FavoritesAction
-    data class RemoveFromFavorites(val nasaId: String): FavoritesAction
-}
-
-sealed interface FavoritesEffect : Effect {
-    data class Message(val text: String) : FavoritesEffect
-}
 
 class FavoritesViewModel(
     private val fetchImagesUseCase: FetchFavoriteImagesUseCase,
@@ -49,16 +28,10 @@ class FavoritesViewModel(
     }
 
     private fun reduce(action: FavoritesAction.Refresh) {
-        when {
-            viewState.progress -> {
-                sideEffect = FavoritesEffect.Message(text = "In process!")
-            }
-            action.force -> {
-                fetchImages(query = viewState.query)
-            }
-            viewState.images.isEmpty() && viewState.query.isEmpty() -> {
-                fetchImages(query = viewState.query)
-            }
+        if (viewState.progress) {
+            sideEffect = FavoritesEffect.Message(text = "In process!")
+        } else {
+            fetchImages(query = viewState.query)
         }
     }
 
@@ -74,29 +47,26 @@ class FavoritesViewModel(
         viewState = viewState.copy(progress = true)
         withViewModelScope {
             viewState = try {
-                val images = fetchImagesUseCase.invoke(query)
-                viewState.copy(progress = false, images = images.map { it.mapFavoriteImageItem() })
+                val images = fetchImagesUseCase.invoke(query).map { it.mapFavoriteImageItem() }
+                Log.d(TAG, "fetchImages: $viewState")
+
+                if (viewState.images != images) viewState.copy(progress = false, images = images)
+                else viewState.copy(progress = false)
             } catch (e: Exception) {
                 Log.e(TAG, "fetchFavorites:", e)
                 viewState.copy(progress = false)
             }
         }
     }
-/*
-    private fun addToFavorites(nasaId: Int) {
-        withViewModelScope {
-            try {
-                addToFavoritesUseCase(nasaId)
-            } catch (e: Exception) {
-                Log.e(TAG, "addToFavorites: ", e)
-            }
-        }
-    }*/
 
     private fun reduce(action: FavoritesAction.RemoveFromFavorites) {
         withViewModelScope {
             try {
                 removeFromFavoritesUseCase(action.nasaId)
+                val newImages = viewState.images.filter { it.nasaId != action.nasaId }
+                if (newImages.size != viewState.images.size) {
+                    viewState = viewState.copy(images = newImages)
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "removeFromFavorites: ", e)
             }

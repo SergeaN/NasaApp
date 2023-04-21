@@ -1,8 +1,5 @@
 package ru.sergean.nasaapp.data.images.remote
 
-import android.util.Log
-import ru.sergean.nasaapp.TAG
-
 data class ImageRemoteModel(
     val title: String,
     val description: String,
@@ -13,9 +10,6 @@ data class ImageRemoteModel(
 
 fun NasaResponse.mapToImageRemote(): List<ImageRemoteModel> {
     return collection.items.mapNotNull {
-        Log.d(TAG, "mapToImageRemote: $this")
-        Log.d(TAG, "mapToImageRemote: $collection")
-        Log.d(TAG, "mapToImageRemote: ${collection.items.size}")
         try {
             val imageRemote = it.data[0]
             val linkRemote = it.links[0]

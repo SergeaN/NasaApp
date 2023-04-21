@@ -1,8 +1,7 @@
-package ru.sergean.nasaapp.domain
+package ru.sergean.nasaapp.domain.images
 
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.data.images.ImageRepository
-import ru.sergean.nasaapp.presentation.ui.favorites.FavoriteImageItem
 import javax.inject.Inject
 
 class FetchFavoriteImagesUseCase @Inject constructor(

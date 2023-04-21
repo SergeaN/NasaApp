@@ -6,25 +6,30 @@
     tools:context=".presentation.ui.home.HomeFragment">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/image_list_text"
+        android:id="@+id/fav_list_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="32dp"
         android:gravity="center"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="No favorite images founded"
+        tools:visibility="visible" />
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/image_swipe_container"
+
+    <ProgressBar
+        android:id="@+id/fav_progress_bar"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/image_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/image_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>
 
 

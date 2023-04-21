@@ -22,6 +22,7 @@
         android:id="@+id/container_bottom_nav_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        style="@style/Widget.NasaApp.BottomNavigationView"
         app:menu="@menu/menu_bottom_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

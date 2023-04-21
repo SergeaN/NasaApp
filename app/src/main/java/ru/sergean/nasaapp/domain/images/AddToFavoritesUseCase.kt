@@ -1,4 +1,4 @@
-package ru.sergean.nasaapp.domain
+package ru.sergean.nasaapp.domain.images
 
 import ru.sergean.nasaapp.data.images.ImageRepository
 import javax.inject.Inject

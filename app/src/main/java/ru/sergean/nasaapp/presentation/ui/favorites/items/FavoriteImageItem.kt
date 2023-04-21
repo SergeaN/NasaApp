@@ -1,6 +1,5 @@
-package ru.sergean.nasaapp.presentation.ui.favorites
+package ru.sergean.nasaapp.presentation.ui.favorites.items
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -9,16 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.databinding.ItemFavoritesImageBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.BaseViewHolder
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
 import ru.sergean.nasaapp.presentation.ui.base.adapter.ItemFingerprint
-
-fun ImageModel.mapFavoriteImageItem(): FavoriteImageItem {
-    return FavoriteImageItem(title, description, dateCreated, nasaId, imageUrl, isSaved = true)
-}
 
 data class FavoriteImageItem(
     val title: String,
@@ -28,6 +22,10 @@ data class FavoriteImageItem(
     val imageUrl: String,
     val isSaved: Boolean,
 ) : Item
+
+fun ImageModel.mapFavoriteImageItem(): FavoriteImageItem =
+    FavoriteImageItem(title, description, dateCreated, nasaId, imageUrl, isSaved = true)
+
 
 class FavoritesImageItemFingerprint(
     private val onImageClick: (FavoriteImageItem) -> Unit,
@@ -111,7 +109,6 @@ class FavoritesImageViewHolder(
     }
 
     private fun ImageView.setChecked(isChecked: Boolean) {
-        Log.d(TAG, "setChecked: $isChecked")
         val icon = when (isChecked) {
             true -> R.drawable.ic_bookmark_fill_24
             false -> R.drawable.ic_bookmark_border_24
