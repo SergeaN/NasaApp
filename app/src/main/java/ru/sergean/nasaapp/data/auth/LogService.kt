@@ -1,4 +1,4 @@
-package ru.sergean.nasaapp.data.network.auth
+package ru.sergean.nasaapp.data.auth
 
 import android.util.Log
 import com.google.firebase.database.DatabaseReference
@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 private const val TAG = "RegLog"
 
-data class RegistrationData(
+data class LogData(
     val name: String,
     val email: String,
     val password: String,
@@ -38,9 +38,9 @@ class RegistrationLogService @Inject constructor(database: FirebaseDatabase) {
     private val registeredColumn = user.child(registeredPath)
     private val confirmedColumn = user.child(confirmedPath)
 
-    fun userEnteredData(registrationData: RegistrationData) {
-        Log.d(TAG, "userEnteredData: $registrationData")
-        registrationData.run {
+    fun userEnteredData(logData: LogData) {
+        Log.d(TAG, "userEnteredData: $logData")
+        logData.run {
             nameColumn.setValueWithListen(name, valueName = namePath)
             emailColumn.setValueWithListen(email, valueName = emailPath)
             numberColumn.setValueWithListen(phoneNumber, valueName = numberPath)

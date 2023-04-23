@@ -2,6 +2,9 @@ package ru.sergean.nasaapp
 
 import android.app.Application
 import android.content.Context
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import ru.sergean.nasaapp.di.AppComponent
 import ru.sergean.nasaapp.di.DaggerAppComponent
 
@@ -16,9 +19,10 @@ class NasaApp : Application() {
 
         appComponent = DaggerAppComponent.builder()
             .applicationContext(context = this)
+            .firebaseAuth(Firebase.auth)
+            .firebaseDatabase(Firebase.database)
             .build()
     }
-
 }
 
 val Context.appComponent: AppComponent

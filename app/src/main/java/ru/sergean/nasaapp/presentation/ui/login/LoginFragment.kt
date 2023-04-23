@@ -72,6 +72,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             viewModel.observeState().flowWithLifecycle(lifecycle).collect { state ->
                 Log.d(TAG, "observeState: $state")
                 binding.run {
+                    emailInput.isErrorEnabled = state.emailError != null
+                    passwordInput.isErrorEnabled = state.passwordError != null
+
                     emailInput.error = state.emailError?.let { getString(it) }
                     passwordInput.error = state.passwordError?.let { getString(it) }
 

@@ -39,13 +39,11 @@ interface AppComponent {
         @BindsInstance
         fun applicationContext(@ApplicationContext context: Context): Builder
 
-/*
         @BindsInstance
         fun firebaseAuth(firebaseAuth: FirebaseAuth): Builder
 
         @BindsInstance
         fun firebaseDatabase(firebaseDatabase: FirebaseDatabase): Builder
-*/
 
         fun build(): AppComponent
     }

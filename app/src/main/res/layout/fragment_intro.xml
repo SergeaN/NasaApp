@@ -32,9 +32,9 @@
         android:fontFamily="@font/noto_sans_medium"
         style="@style/Widget.Material3.Button.IconButton.Filled"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/edit_text_height"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginBottom="16dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_margin="16dp"
         android:text="@string/next"
         app:cornerRadius="16dp" />
 

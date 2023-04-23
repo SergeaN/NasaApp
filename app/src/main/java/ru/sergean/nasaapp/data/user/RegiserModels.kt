@@ -1,12 +1,10 @@
 package ru.sergean.nasaapp.data.user
 
-import java.io.Serializable
-
 data class RegisterReceive(
     val name: String,
     val email: String,
-    val password: String,
     val phoneNumber: String,
+    val password: String,
 )
 
 data class RegisterResponse(
@@ -14,11 +12,8 @@ data class RegisterResponse(
     val error: String? = null,
 )
 
-fun RegistrationData.mapToReceive() = RegisterReceive(name, email, password, phoneNumber)
+sealed interface RegisterResult {
+    data class Success(val token: String) : RegisterResult
+    data class Error(val exception: Exception) : RegisterResult
+}
 
-data class RegistrationData(
-    val name: String,
-    val email: String,
-    val password: String,
-    val phoneNumber: String,
-): Serializable

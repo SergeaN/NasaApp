@@ -32,19 +32,21 @@
         android:id="@+id/email_input"
         style="@style/Widget.NasaApp.OutlinedInput"
         android:layout_width="match_parent"
-        app:errorEnabled="true"
         android:layout_height="wrap_content"
-        app:endIconMode="clear_text"
         android:layout_marginBottom="6dp"
+        app:endIconMode="clear_text"
+        app:errorEnabled="false"
         app:startIconDrawable="@drawable/ic_email_item">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/edit_text_height"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/noto_sans_regular"
             android:hint="@string/email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:padding="8dp"
+            android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -54,58 +56,68 @@
         style="@style/Widget.NasaApp.OutlinedInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:errorEnabled="true"
         android:layout_marginBottom="6dp"
         app:endIconMode="password_toggle"
+        app:errorEnabled="false"
         app:startIconDrawable="@drawable/ic_password_item">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/edit_text_height"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/noto_sans_regular"
             android:hint="@string/password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:padding="8dp"
+            android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/edit_text_height"
-        android:layout_marginBottom="4dp">
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/login_button"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:fontFamily="@font/noto_sans_medium"
+                android:padding="10dp"
+                android:text="@string/sign_in"
+                android:layout_marginBottom="4dp"
+                android:textSize="14sp"
+                app:cornerRadius="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/register_button"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/noto_sans_medium"
+                android:padding="10dp"
+                android:text="@string/sign_up"
+                android:textSize="14sp"
+                app:backgroundTint="@color/green"
+                app:cornerRadius="16dp" />
+
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/login_progress"
-            android:layout_width="@dimen/edit_text_height"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="4dp"
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/login_button"
-            style="@style/Widget.Material3.Button.IconButton.Filled"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:enabled="false"
-            android:fontFamily="@font/noto_sans_medium"
-            android:text="@string/sign_in"
-            app:cornerRadius="16dp" />
-
     </FrameLayout>
-
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/register_button"
-        style="@style/Widget.Material3.Button.IconButton.Filled"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/edit_text_height"
-        android:fontFamily="@font/noto_sans_medium"
-        android:text="@string/sign_up"
-        app:backgroundTint="@color/green"
-        app:cornerRadius="16dp" />
-
 
 </LinearLayout>
