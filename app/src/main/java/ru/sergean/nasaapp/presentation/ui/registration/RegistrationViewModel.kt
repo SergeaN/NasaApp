@@ -10,7 +10,6 @@ import ru.sergean.nasaapp.utils.isMatch
 import javax.inject.Inject
 
 class RegistrationViewModel(
-    private val registerUseCase: RegisterUseCase,
 ) : BaseViewModel<RegistrationState, RegistrationAction, RegistrationEffect>(
     initialState = RegistrationState()
 ) {
@@ -22,6 +21,7 @@ class RegistrationViewModel(
             is RegistrationAction.ChangePassword -> reduce(action)
         }
     }
+
     private fun reduce(action: RegistrationAction.ChangeName) {
         viewState = if (action.name.isNotBlank() && action.name.isNotEmpty()) {
             viewState.copy(name = action.name, nameError = null)
@@ -40,9 +40,15 @@ class RegistrationViewModel(
 
     private fun reduce(action: RegistrationAction.ChangePhone) {
         viewState = if (action.isValid) {
-            viewState.copy(phone = action.phone, phoneError = null)
+            viewState.copy(
+                phone = action.phone, formattedPhone = action.formattedPhone,
+                phoneError = null
+            )
         } else {
-            viewState.copy(phone = action.phone, phoneError = R.string.phone_error)
+            viewState.copy(
+                phone = action.phone, formattedPhone = action.formattedPhone,
+                phoneError = R.string.phone_error
+            )
         }
     }
 
@@ -58,17 +64,14 @@ class RegistrationViewModel(
         private const val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,20}\$"
     }
 
-    class Factory @Inject constructor(
-        private val registerUseCase: RegisterUseCase,
-    ) : ViewModelProvider.Factory {
+    class Factory @Inject constructor() : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
-                return RegistrationViewModel(registerUseCase) as T
+                return RegistrationViewModel() as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
-
 }

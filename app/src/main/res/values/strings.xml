@@ -61,5 +61,6 @@ The rings are named alphabetically in the order they were discovered. The main r
     <string name="image_created">Image created:</string>
     <string name="in_process">In process</string>
     <string name="confirm_code">Confirm code...</string>
+    <string name="success_confirmation">Success confirmation</string>
 
 </resources>

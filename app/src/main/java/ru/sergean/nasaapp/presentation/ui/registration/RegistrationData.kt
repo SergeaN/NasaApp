@@ -34,7 +34,10 @@ val RegistrationState.isDataValid: Boolean
 sealed interface RegistrationAction : Action {
     data class ChangeName(val name: String) : RegistrationAction
     data class ChangeEmail(val email: String) : RegistrationAction
-    data class ChangePhone(val phone: String, val isValid: Boolean) : RegistrationAction
+    data class ChangePhone(
+        val phone: String, val formattedPhone: String, val isValid: Boolean
+    ) : RegistrationAction
+
     data class ChangePassword(val password: String) : RegistrationAction
 }
 

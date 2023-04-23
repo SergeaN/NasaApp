@@ -11,6 +11,11 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
+import ru.sergean.nasaapp.data.auth.RegistrationLogService
+import ru.sergean.nasaapp.data.datastore.SettingDataStore
+import ru.sergean.nasaapp.data.user.RegisterResult
+import ru.sergean.nasaapp.data.user.UserService
+import ru.sergean.nasaapp.domain.user.RegisterUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.presentation.ui.registration.RegistrationData
 import java.util.concurrent.TimeUnit
@@ -18,12 +23,21 @@ import java.util.concurrent.TimeUnit
 class ConfirmationViewModel(
     private val registrationData: RegistrationData,
     private val auth: FirebaseAuth,
+    private val registerUseCase: RegisterUseCase,
+    private val settingDataStore: SettingDataStore,
+    private val logService: RegistrationLogService,
 ) : BaseViewModel<ConfirmationState, ConfirmationAction, ConfirmationEffect>(
     initialState = ConfirmationState()
 ) {
 
     private var storedVerificationId: String? = ""
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
+
+    init {
+        registrationData.run {
+            logService.userEnteredData(name, email, phoneNumber, password)
+        }
+    }
 
     override fun dispatch(action: ConfirmationAction) {
         Log.d(TAG, "dispatch: $action")
@@ -90,26 +104,6 @@ class ConfirmationViewModel(
         }
     }
 
-
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-        auth.signInWithCredential(credential).addOnCompleteListener { task ->
-            sideEffect = when {
-                task.isSuccessful -> {
-                    Log.d(TAG, "Validation: Success")
-                    ConfirmationEffect.SuccessConfirmation
-                }
-                task.exception is FirebaseAuthInvalidCredentialsException -> {
-                    Log.d(TAG, "Validation: Invalid Code")
-                    ConfirmationEffect.Message(R.string.invalid_code)
-                }
-                else -> {
-                    Log.d(TAG, "Validation: Error ${task.exception?.localizedMessage}")
-                    ConfirmationEffect.AuthError(Exception(task.exception))
-                }
-            }
-        }
-    }
-
     private fun verifyPhoneNumberWithCode(code: String) {
         storedVerificationId?.let {
             val credential = PhoneAuthProvider.getCredential(it, code)
@@ -118,11 +112,77 @@ class ConfirmationViewModel(
             sideEffect = ConfirmationEffect.AuthError(Exception("StoredVerificationId is null"))
         }
     }
+
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
+        auth.signInWithCredential(credential).addOnCompleteListener { task ->
+            when {
+                task.isSuccessful -> {
+                    Log.d(TAG, "Validation: Success")
+                    logService.userConfirmed()
+                    register()
+                }
+                task.exception is FirebaseAuthInvalidCredentialsException -> {
+                    Log.d(TAG, "Validation: Invalid Code")
+                    sideEffect = ConfirmationEffect.Message(R.string.invalid_code)
+                }
+                else -> {
+                    Log.d(TAG, "Validation: Error ${task.exception?.localizedMessage}")
+                    sideEffect = ConfirmationEffect.AuthError(Exception(task.exception))
+                }
+            }
+        }
+    }
+
+    private fun register() {
+        Log.d(TAG, "Start register: $registrationData")
+        withViewModelScope {
+            sideEffect = try {
+                val result = registerUseCase.invoke(
+                    registrationData.name, registrationData.email,
+                    registrationData.phoneNumber, registrationData.password
+                )
+                Log.d(TAG, "register: $result")
+                when (result) {
+                    is RegisterResult.Success -> {
+                        Log.d(TAG, "register: Success")
+
+                        logService.userRegistered()
+                        settingDataStore.login()
+                        ConfirmationEffect.SuccessConfirmation
+                    }
+                    is RegisterResult.Error -> {
+                        Log.d(TAG, "register: Error")
+
+                        ConfirmationEffect.AuthError(Exception(result.exception))
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.d(TAG, "register: ${e.localizedMessage}")
+                ConfirmationEffect.AuthError(e)
+            }
+        }
+
+    }
+
+    private fun setLogin() {
+        withViewModelScope {
+            try {
+                settingDataStore.login()
+                Log.d(TAG, "setLogin: Success")
+            } catch (e: Exception) {
+                Log.d(TAG, "setLogin: Error", e)
+            }
+        }
+    }
 }
 
 class ConfirmationViewModelFactory @AssistedInject constructor(
     @Assisted("reg_data") private val registrationData: RegistrationData,
     private val auth: FirebaseAuth,
+    private val registerUseCase: RegisterUseCase,
+    private val settingDataStore: SettingDataStore,
+    private val logService: RegistrationLogService,
 ) : ViewModelProvider.Factory {
 
 
@@ -130,7 +190,7 @@ class ConfirmationViewModelFactory @AssistedInject constructor(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ConfirmationViewModel::class.java)) {
             return ConfirmationViewModel(
-                registrationData, auth
+                registrationData, auth, registerUseCase, settingDataStore, logService
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

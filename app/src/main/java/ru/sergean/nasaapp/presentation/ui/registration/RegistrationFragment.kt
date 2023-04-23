@@ -26,7 +26,6 @@ import javax.inject.Inject
 
 class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
-
     @Inject
     lateinit var viewModelFactory: RegistrationViewModel.Factory
 
@@ -43,7 +42,6 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         binding.run {
             codePicker.registerCarrierNumberEditText(phoneEditText)
@@ -77,8 +75,12 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
             }
             phoneEditText.doOnTextChanged { text, _, _, _ ->
                 phoneWatcher.watch(text) {
+                    val phone = codePicker.fullNumberWithPlus
+                    val formattedPhone = codePicker.formattedFullNumber
                     val isValid = codePicker.isValidFullNumber
-                    viewModel.dispatch(RegistrationAction.ChangePhone(it, isValid))
+                    viewModel.dispatch(
+                        RegistrationAction.ChangePhone(phone, formattedPhone, isValid)
+                    )
                 }
             }
             passwordEditText.doOnTextChanged { text, _, _, _ ->
@@ -138,9 +140,5 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
         )
 
         findNavController().navigate(R.id.action_registrationFragment_to_confirmationFragment, args)
-    }
-
-    companion object{
-        private const val CONFIRM_REQUEST = "confirm_phone_number"
     }
 }

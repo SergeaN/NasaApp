@@ -4,11 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.fraggjkee.smsconfirmationview.SmsConfirmationView
 import kotlinx.coroutines.launch
@@ -17,7 +20,9 @@ import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.databinding.FragmentConfirmationBinding
 import ru.sergean.nasaapp.presentation.ui.registration.RegistrationData
+import ru.sergean.nasaapp.presentation.ui.registration.RegistrationFragment
 import ru.sergean.nasaapp.utils.parcelableArgs
+import ru.sergean.nasaapp.utils.showSnackbar
 import ru.sergean.nasaapp.utils.stringArgs
 import javax.inject.Inject
 
@@ -38,7 +43,7 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
     override fun onAttach(context: Context) {
         context.appComponent.inject(fragment = this)
         super.onAttach(context)
-        //viewModel.dispatch(ConfirmationAction.VerifyNumber(activity = requireActivity()))
+        viewModel.dispatch(ConfirmationAction.VerifyNumber(activity = requireActivity()))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,20 +84,38 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
                 when (effect) {
                     is ConfirmationEffect.Message -> {
                         Log.d(TAG, "observeSideEffects: ${effect.text}")
+
+                        showSnackbar(effect.text)
                     }
                     is ConfirmationEffect.AuthError -> {
                         Log.d(TAG, "observeSideEffects: Error ${effect.exception.localizedMessage}")
+
+                        showSnackbar(R.string.unknown_error)
+                        navigateToRegistration()
                     }
                     is ConfirmationEffect.InvalidCode -> {
                         Log.d(TAG, "observeSideEffects: Invalid Code")
+
+                        showSnackbar(R.string.invalid_code)
                         binding.codeInput.enteredCode = ""
                     }
                     is ConfirmationEffect.SuccessConfirmation -> {
                         Log.d(TAG, "observeSideEffects: Success")
+
+                        showSnackbar(R.string.success_confirmation)
+                        navigateToApp()
                     }
                 }
             }
         }
+    }
+
+    private fun navigateToRegistration() {
+        findNavController().navigateUp()
+    }
+
+    private fun navigateToApp() {
+        findNavController().navigate(R.id.action_confirmationFragment_to_homeFragment)
     }
 
     companion object {
