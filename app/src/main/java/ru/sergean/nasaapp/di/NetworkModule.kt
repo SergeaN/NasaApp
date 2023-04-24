@@ -13,6 +13,8 @@ import retrofit2.create
 import ru.sergean.nasaapp.data.images.remote.ImagesRemoteDataSource
 import ru.sergean.nasaapp.data.images.remote.MockImagesRemoteDataSource
 import ru.sergean.nasaapp.data.images.remote.NasaService
+import ru.sergean.nasaapp.data.network.NetworkConnectionManager
+import ru.sergean.nasaapp.data.network.NetworkConnectionManagerImpl
 import ru.sergean.nasaapp.data.user.MockUserService
 import ru.sergean.nasaapp.data.user.UserService
 import ru.sergean.nasaapp.data.user.USER_SERVICE_URL
@@ -20,6 +22,13 @@ import javax.inject.Singleton
 
 @Module
 class NetworkModule {
+
+    @Provides
+    fun provideNetworkConnectionManager(
+        networkConnectionManager: NetworkConnectionManagerImpl
+    ): NetworkConnectionManager {
+        return networkConnectionManager
+    }
 
     @Provides
     @Singleton

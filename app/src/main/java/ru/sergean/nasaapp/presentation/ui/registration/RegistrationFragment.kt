@@ -4,11 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.os.ConfigurationCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,9 +16,10 @@ import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
+import ru.sergean.nasaapp.data.network.NetworkConnectionManager
+import ru.sergean.nasaapp.data.network.isNetworkConnected
 import ru.sergean.nasaapp.databinding.FragmentRegistrationBinding
 import ru.sergean.nasaapp.presentation.ui.confirmation.ConfirmationFragment
-import ru.sergean.nasaapp.presentation.ui.login.LoginAction
 import ru.sergean.nasaapp.utils.EditTextWatcher
 import javax.inject.Inject
 
@@ -128,8 +127,11 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
     }
 
     private fun navigateToConfirmation() {
-        val registrationData = viewModel.observeState().value.let {
-            RegistrationData(it.name, it.email, it.phone, it.password)
+        val registrationData = viewModel.observeState().value.run {
+            RegistrationData(
+                name = name ?: "", email = email ?: "",
+                phoneNumber = phone ?: "", password = password ?: ""
+            )
         }
 
         val formattedPhoneNumber = viewModel.observeState().value.formattedPhone

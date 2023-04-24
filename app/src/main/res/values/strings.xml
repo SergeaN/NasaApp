@@ -63,5 +63,7 @@ The rings are named alphabetically in the order they were discovered. The main r
     <string name="confirm_code">Confirm code...</string>
     <string name="success_confirmation">Success confirmation</string>
     <string name="already_sent">Already sent</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="close">Close</string>
 
 </resources>

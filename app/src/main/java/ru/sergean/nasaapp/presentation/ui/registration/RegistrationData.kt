@@ -17,11 +17,11 @@ data class RegistrationData(
 
 data class RegistrationState(
     val progress: Boolean = false,
-    val name: String = "",
-    val email: String = "",
-    val phone: String = "",
+    val name: String? = null,
+    val email: String? = null,
+    val phone: String? = null,
     val formattedPhone: String = "",
-    val password: String = "",
+    val password: String? = null,
     @StringRes val nameError: Int? = null,  // null means valid
     @StringRes val emailError: Int? = null,  // null means valid
     @StringRes val phoneError: Int? = null,  // null means valid
@@ -30,6 +30,7 @@ data class RegistrationState(
 
 val RegistrationState.isDataValid: Boolean
     get() = nameError == null && emailError == null && phoneError == null && passwordError == null
+            && name != null && email != null && phone != null && password != null
 
 sealed interface RegistrationAction : Action {
     data class ChangeName(val name: String) : RegistrationAction

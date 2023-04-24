@@ -5,20 +5,24 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.appComponent
+import ru.sergean.nasaapp.data.network.NetworkConnectionManager
 import ru.sergean.nasaapp.databinding.ActivityMainBinding
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
+
+    @Inject
+    lateinit var connectionManager: NetworkConnectionManager
 
     @Inject
     lateinit var viewModelFactory: MainViewModel.Factory
@@ -40,6 +44,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 if (startMode != null) setupNavGraph(startMode)
             }
         }
+
+        connectionManager.startListenNetworkState()
+
+        observeInternetConnection()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        connectionManager.stopListenNetworkState()
     }
 
     private fun setupNavGraph(mode: StartMode) {
@@ -69,5 +82,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
     }
+
+    private fun observeInternetConnection() {
+        lifecycleScope.launch {
+            connectionManager.networkConnectionState.flowWithLifecycle(lifecycle).collect {
+                if (!it) {
+                    Snackbar.make(
+                        binding.root, R.string.no_internet_connection, Snackbar.LENGTH_INDEFINITE
+                    ).setAction(R.string.close) {}.show()
+                }
+            }
+        }
+    }
+
 }
 

@@ -7,14 +7,15 @@ import ru.sergean.nasaapp.presentation.ui.base.arch.State
 
 data class LoginState(
     val progress: Boolean = false,
-    val email: String = "",
-    val password: String = "",
+    val email: String? = null,
+    val password: String? = null,
     @StringRes val emailError: Int? = null, // null means valid
     @StringRes val passwordError: Int? = null, // null means valid
 ) : State
 
 val LoginState.isDataValid
     get() = emailError == null && passwordError == null
+            && email != null && password != null
 
 sealed interface LoginAction : Action {
     object SignIn : LoginAction

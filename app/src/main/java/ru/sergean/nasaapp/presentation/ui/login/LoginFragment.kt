@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
+import ru.sergean.nasaapp.data.network.NetworkConnectionManager
+import ru.sergean.nasaapp.data.network.isNetworkConnected
 import ru.sergean.nasaapp.databinding.FragmentLoginBinding
 import ru.sergean.nasaapp.presentation.ui.home.HomeFragment
 import ru.sergean.nasaapp.utils.EditTextWatcher
@@ -103,7 +105,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             }
         }
     }
-
 
     private fun navigateToRegistration() {
         findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)

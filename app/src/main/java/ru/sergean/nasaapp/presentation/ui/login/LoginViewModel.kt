@@ -30,7 +30,7 @@ class LoginViewModel(
     }
 
     private fun reduce(action: LoginAction.SignIn) {
-        signIn(email = viewState.email, password = viewState.password)
+        signIn(email = viewState.email ?: "", password = viewState.password ?: "")
     }
 
     private fun reduce(action: LoginAction.ChangeEmail) {

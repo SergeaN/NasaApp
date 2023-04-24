@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import ru.sergean.nasaapp.R
 import java.io.Serializable
 import kotlin.properties.ReadOnlyProperty
 
@@ -64,6 +65,6 @@ fun Fragment.showSnackbar(message: String) {
     Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
 }
 
-fun Fragment.showSnackbar(@StringRes stringId: Int) {
-    Snackbar.make(requireView(), stringId, Snackbar.LENGTH_LONG).show()
+fun Fragment.showSnackbar(@StringRes stringId: Int, length: Int = Snackbar.LENGTH_LONG) {
+    Snackbar.make(requireView(), stringId, length).show()
 }
