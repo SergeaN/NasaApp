@@ -26,6 +26,6 @@ object MockUserService : UserService {
 
     override suspend fun register(registerReceive: RegisterReceive): RegisterResponse {
         delay(timeMillis = 3000)
-        return RegisterResponse(token = "wqewqe", error = null)
+        return RegisterResponse(token = "qweqwewq", error = null)
     }
 }

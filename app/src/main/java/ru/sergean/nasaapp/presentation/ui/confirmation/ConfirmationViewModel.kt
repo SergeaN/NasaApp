@@ -9,6 +9,7 @@ import com.google.firebase.auth.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.auth.RegistrationLogService
@@ -48,11 +49,15 @@ class ConfirmationViewModel(
     }
 
     private fun reduce(action: ConfirmationAction.VerifyNumber) {
-        if (viewState.progress) {
-            sideEffect = ConfirmationEffect.Message(R.string.in_process)
-        } else {
-            viewState = viewState.copy(progress = true, message = R.string.sending_code)
-            startVerification(action.activity)
+        when {
+            viewState.progress -> sideEffect = ConfirmationEffect.Message(R.string.in_process)
+            viewState.codeSent -> sideEffect = ConfirmationEffect.Message(R.string.already_sent)
+            else -> {
+                viewState = viewState.copy(
+                    progress = true, message = R.string.sending_code
+                )
+                startVerification(action.activity)
+            }
         }
     }
 
@@ -65,17 +70,18 @@ class ConfirmationViewModel(
         }
     }
 
-
     private fun startVerification(activity: Activity) {
-        Log.d(TAG, "startVerification: ${registrationData.phoneNumber}")
-
-        val options = PhoneAuthOptions.newBuilder(auth)
-            .setPhoneNumber(registrationData.phoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(activity)
-            .setCallbacks(callbacks)
-            .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
+        withViewModelScope {
+            Log.d(TAG, "startVerification: ${registrationData.phoneNumber}")
+            delay(timeMillis = 5000)
+            val options = PhoneAuthOptions.newBuilder(auth)
+                .setPhoneNumber(registrationData.phoneNumber)
+                .setTimeout(60L, TimeUnit.SECONDS)
+                .setActivity(activity)
+                .setCallbacks(callbacks)
+                .build()
+            PhoneAuthProvider.verifyPhoneNumber(options)
+        }
     }
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -100,12 +106,15 @@ class ConfirmationViewModel(
             storedVerificationId = verificationId
             resendToken = token
 
-            viewState = viewState.copy(progress = false, message = R.string.we_sent_code_to)
+            viewState = viewState.copy(
+                progress = false, codeSent = true, message = R.string.we_sent_code_to
+            )
         }
     }
 
     private fun verifyPhoneNumberWithCode(code: String) {
         storedVerificationId?.let {
+            Log.d(TAG, "verifyPhoneNumberWithCode: ")
             val credential = PhoneAuthProvider.getCredential(it, code)
             signInWithPhoneAuthCredential(credential)
         } ?: {
@@ -118,15 +127,19 @@ class ConfirmationViewModel(
             when {
                 task.isSuccessful -> {
                     Log.d(TAG, "Validation: Success")
+
                     logService.userConfirmed()
                     register()
                 }
                 task.exception is FirebaseAuthInvalidCredentialsException -> {
                     Log.d(TAG, "Validation: Invalid Code")
-                    sideEffect = ConfirmationEffect.Message(R.string.invalid_code)
+
+                    viewState = viewState.copy(progress = false)
+                    sideEffect = ConfirmationEffect.InvalidCode
                 }
                 else -> {
                     Log.d(TAG, "Validation: Error ${task.exception?.localizedMessage}")
+
                     sideEffect = ConfirmationEffect.AuthError(Exception(task.exception))
                 }
             }
@@ -148,6 +161,7 @@ class ConfirmationViewModel(
 
                         logService.userRegistered()
                         settingDataStore.login()
+
                         ConfirmationEffect.SuccessConfirmation
                     }
                     is RegisterResult.Error -> {
@@ -164,17 +178,6 @@ class ConfirmationViewModel(
         }
 
     }
-
-    private fun setLogin() {
-        withViewModelScope {
-            try {
-                settingDataStore.login()
-                Log.d(TAG, "setLogin: Success")
-            } catch (e: Exception) {
-                Log.d(TAG, "setLogin: Error", e)
-            }
-        }
-    }
 }
 
 class ConfirmationViewModelFactory @AssistedInject constructor(
@@ -184,7 +187,6 @@ class ConfirmationViewModelFactory @AssistedInject constructor(
     private val settingDataStore: SettingDataStore,
     private val logService: RegistrationLogService,
 ) : ViewModelProvider.Factory {
-
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

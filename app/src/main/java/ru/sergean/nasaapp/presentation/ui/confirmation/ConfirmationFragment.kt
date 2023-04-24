@@ -4,6 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -40,10 +43,14 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
 
     private val binding by viewBinding(FragmentConfirmationBinding::bind)
 
+    private var inputManager: InputMethodManager? = null
+
     override fun onAttach(context: Context) {
         context.appComponent.inject(fragment = this)
         super.onAttach(context)
         viewModel.dispatch(ConfirmationAction.VerifyNumber(activity = requireActivity()))
+
+        inputManager = ContextCompat.getSystemService(context, InputMethodManager::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,6 +79,11 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
                     codeInput.isEnabled = !state.progress
                     resendButton.isEnabled = !state.progress
                     confirmProgress.isVisible = state.progress
+
+                    if (state.codeSent) {
+                        codeInput.requestFocus()
+                        inputManager?.showSoftInput(codeInput, 0)
+                    }
                 }
             }
         }
@@ -84,8 +96,7 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
                 when (effect) {
                     is ConfirmationEffect.Message -> {
                         Log.d(TAG, "observeSideEffects: ${effect.text}")
-
-                        showSnackbar(effect.text)
+                        //showSnackbar(effect.text)
                     }
                     is ConfirmationEffect.AuthError -> {
                         Log.d(TAG, "observeSideEffects: Error ${effect.exception.localizedMessage}")
@@ -108,6 +119,11 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        inputManager?.hideSoftInputFromWindow(binding.codeInput.windowToken, 0)
     }
 
     private fun navigateToRegistration() {

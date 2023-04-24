@@ -8,6 +8,7 @@ import ru.sergean.nasaapp.presentation.ui.base.arch.State
 
 data class ConfirmationState(
     val progress: Boolean = false,
+    val codeSent: Boolean = false,
     @StringRes val message: Int? = null
 ) : State
 

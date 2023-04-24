@@ -3,12 +3,12 @@ package ru.sergean.nasaapp.presentation.ui.login
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +23,7 @@ import ru.sergean.nasaapp.presentation.ui.home.HomeFragment
 import ru.sergean.nasaapp.utils.EditTextWatcher
 import ru.sergean.nasaapp.utils.showSnackbar
 import javax.inject.Inject
+
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
