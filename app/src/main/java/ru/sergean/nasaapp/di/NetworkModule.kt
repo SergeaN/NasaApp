@@ -33,8 +33,8 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideImagesRemoteDataSource(nasaService: NasaService): ImagesRemoteDataSource {
-        //return nasaService
-        return MockImagesRemoteDataSource
+        return nasaService
+        //return MockImagesRemoteDataSource
     }
 
     @Provides

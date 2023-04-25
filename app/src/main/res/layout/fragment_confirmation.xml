@@ -58,38 +58,27 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/resend_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
         android:fontFamily="@font/noto_sans_italic"
         android:text="@string/didn_t_receive_code"
-        app:layout_constraintEnd_toStartOf="@id/resend_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/code_input" />
+        app:layout_constraintTop_toBottomOf="@+id/confirm_progress" />
 
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/resend_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:enabled="false"
-        android:fontFamily="@font/noto_sans_semi_bold"
-        android:text="@string/resend"
-        android:textColor="@color/green"
-        app:layout_constraintBaseline_toBaselineOf="@id/resend_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/resend_text" />
 
     <ProgressBar
+        android:layout_marginTop="16dp"
         android:id="@+id/confirm_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resend_text"
+        app:layout_constraintTop_toBottomOf="@+id/code_input"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

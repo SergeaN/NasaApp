@@ -44,6 +44,7 @@ class ConfirmationViewModel(
         Log.d(TAG, "dispatch: $action")
         when (action) {
             is ConfirmationAction.VerifyNumber -> reduce(action)
+            is ConfirmationAction.ResendCode -> reduce(action)
             is ConfirmationAction.ValidateCode -> reduce(action)
         }
     }
@@ -53,35 +54,62 @@ class ConfirmationViewModel(
             viewState.progress -> sideEffect = ConfirmationEffect.Message(R.string.in_process)
             viewState.codeSent -> sideEffect = ConfirmationEffect.Message(R.string.already_sent)
             else -> {
-                viewState = viewState.copy(
-                    progress = true, message = R.string.sending_code
-                )
+                viewState = viewState.copy(progress = true, message = R.string.sending_code)
                 startVerification(action.activity)
             }
         }
     }
 
+    private fun reduce(action: ConfirmationAction.ResendCode) {
+        when {
+            viewState.progress -> sideEffect = ConfirmationEffect.Message(R.string.in_process)
+            !viewState.codeSent -> sideEffect = ConfirmationEffect.Message(R.string.in_process)
+            resendToken == null -> sideEffect = ConfirmationEffect.Message(R.string.resend_error)
+            else -> {
+                viewState = viewState.copy(
+                    progress = true, codeSent = false, message = R.string.sending_code
+                )
+                resendVerificationCode(action.activity, resendToken!!)
+            }
+        }
+    }
+
     private fun reduce(action: ConfirmationAction.ValidateCode) {
-        if (viewState.progress) {
-            sideEffect = ConfirmationEffect.Message(R.string.in_process)
-        } else {
-            viewState = viewState.copy(progress = true, message = R.string.confirm_code)
-            verifyPhoneNumberWithCode(action.code)
+        when {
+            viewState.progress -> {
+                sideEffect = ConfirmationEffect.Message(R.string.in_process)
+            }
+            storedVerificationId == null -> {
+                sideEffect = ConfirmationEffect.AuthError(Exception("StoredVerificationId is null"))
+            }
+            else -> {
+                viewState = viewState.copy(progress = true, message = R.string.confirm_code)
+                verifyPhoneNumberWithCode(storedVerificationId!!, action.code)
+            }
         }
     }
 
     private fun startVerification(activity: Activity) {
-        withViewModelScope {
-            Log.d(TAG, "startVerification: ${registrationData.phoneNumber}")
-            delay(timeMillis = 5000)
-            val options = PhoneAuthOptions.newBuilder(auth)
-                .setPhoneNumber(registrationData.phoneNumber)
-                .setTimeout(60L, TimeUnit.SECONDS)
-                .setActivity(activity)
-                .setCallbacks(callbacks)
-                .build()
-            PhoneAuthProvider.verifyPhoneNumber(options)
-        }
+        val options = PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber(registrationData.phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(activity)
+            .setCallbacks(callbacks)
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+    private fun resendVerificationCode(
+        activity: Activity, token: PhoneAuthProvider.ForceResendingToken
+    ) {
+        val optionsBuilder = PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber(registrationData.phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(activity)
+            .setCallbacks(callbacks)
+
+        optionsBuilder.setForceResendingToken(token)
+        PhoneAuthProvider.verifyPhoneNumber(optionsBuilder.build())
     }
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -112,14 +140,10 @@ class ConfirmationViewModel(
         }
     }
 
-    private fun verifyPhoneNumberWithCode(code: String) {
-        storedVerificationId?.let {
-            Log.d(TAG, "verifyPhoneNumberWithCode: ")
-            val credential = PhoneAuthProvider.getCredential(it, code)
-            signInWithPhoneAuthCredential(credential)
-        } ?: {
-            sideEffect = ConfirmationEffect.AuthError(Exception("StoredVerificationId is null"))
-        }
+    private fun verifyPhoneNumberWithCode(storedVerificationId: String, code: String) {
+        Log.d(TAG, "verifyPhoneNumberWithCode: ")
+        val credential = PhoneAuthProvider.getCredential(storedVerificationId, code)
+        signInWithPhoneAuthCredential(credential)
     }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {

@@ -15,6 +15,7 @@ data class ConfirmationState(
 
 sealed interface ConfirmationAction : Action {
     data class VerifyNumber(val activity: Activity) : ConfirmationAction
+    data class ResendCode(val activity: Activity): ConfirmationAction
     data class ValidateCode(val code: String) : ConfirmationAction
 }
 

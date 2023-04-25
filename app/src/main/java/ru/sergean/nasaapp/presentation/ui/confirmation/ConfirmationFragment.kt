@@ -8,6 +8,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
@@ -64,6 +65,10 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
             codeInput.onChangeListener = SmsConfirmationView.OnChangeListener { code, isComplete ->
                 if (isComplete) viewModel.dispatch(ConfirmationAction.ValidateCode(code))
             }
+
+            resendText.setOnClickListener {
+                showSnackbar(R.string.try_later)
+            }
         }
 
         observeState()
@@ -77,8 +82,9 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
                 binding.run {
                     state.message?.let { confirmInfoText.text = getString(it) }
                     codeInput.isEnabled = !state.progress
-                    resendButton.isEnabled = !state.progress
                     confirmProgress.isVisible = state.progress
+
+                    resendText.isInvisible = state.progress || !state.codeSent
 
                     if (state.codeSent) {
                         codeInput.requestFocus()

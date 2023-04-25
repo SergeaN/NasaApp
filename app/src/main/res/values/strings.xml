@@ -31,7 +31,7 @@
     <string name="name_error">Incorrect name</string>
     <string name="email_error">Incorrect email</string>
     <string name="phone_error">Phone error</string>
-    <string name="password_error">Incorrect password</string>
+    <string name="password_error">Password length 4–20. At least one digit 0..9. At least one letter a-z. At least one letter A-Z</string>
     <string name="sign_in_to_nasa_app">Sign in to Nasa App</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
@@ -46,9 +46,9 @@
 
     <string name="we_sent_code_to">We sent an SMS code to</string>
 
-    <string name="sun_text">sun_textsun_textsun_textsun_textsun_textsun_text</string>
-    <string name="earth_text">earth_textearth_textearth_textearth_textearth_textearth_textearth_text</string>
-    <string name="saturn_text">saturn_textsaturn_textsaturn_textsaturn_text</string>
+    <string name="sun_text">Welcome to this incredible app!</string>
+    <string name="earth_text">And also add any picture to favorites</string>
+    <string name="saturn_text">Here you can search for any pictures related to space</string>
 
     <string name="images_not_found">No images found</string>
 
@@ -60,10 +60,12 @@ The rings are named alphabetically in the order they were discovered. The main r
     <string name="date_placeholder">24.09.2009</string>
     <string name="image_created">Image created:</string>
     <string name="in_process">In process</string>
-    <string name="confirm_code">Confirm code...</string>
+    <string name="confirm_code">Confirm code…</string>
     <string name="success_confirmation">Success confirmation</string>
     <string name="already_sent">Already sent</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="close">Close</string>
+    <string name="resend_error">Resend error</string>
+    <string name="try_later">Try later</string>
 
 </resources>
