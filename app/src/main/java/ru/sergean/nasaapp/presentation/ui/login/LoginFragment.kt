@@ -17,28 +17,36 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
-import ru.sergean.nasaapp.appComponent
-import ru.sergean.nasaapp.data.network.NetworkConnectionManager
-import ru.sergean.nasaapp.data.network.isNetworkConnected
 import ru.sergean.nasaapp.databinding.FragmentLoginBinding
+import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModelFactory
 import ru.sergean.nasaapp.presentation.ui.home.HomeFragment
+import ru.sergean.nasaapp.presentation.ui.main.LoginScreenCallbacks
 import ru.sergean.nasaapp.utils.EditTextWatcher
 import ru.sergean.nasaapp.utils.showSnackbar
 import javax.inject.Inject
 
-
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
     @Inject
-    lateinit var viewModelFactory: LoginViewModel.Factory
+    lateinit var viewModelFactory: BaseViewModelFactory
 
     private val viewModel: LoginViewModel by viewModels { viewModelFactory }
 
     private val binding by viewBinding(FragmentLoginBinding::bind)
 
+    private var callbacks: LoginScreenCallbacks? = null
+
     override fun onAttach(context: Context) {
-        context.appComponent.inject(fragment = this)
+        callbacks = (context as LoginScreenCallbacks).apply {
+            createComponent()
+            loginComponent.inject(fragment = this@LoginFragment)
+        }
         super.onAttach(context)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

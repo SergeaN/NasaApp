@@ -12,13 +12,14 @@ import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.databinding.FragmentIntroBinding
+import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModelFactory
 import ru.sergean.nasaapp.utils.onPageSelected
 import javax.inject.Inject
 
 class IntroFragment : Fragment(R.layout.fragment_intro) {
 
     @Inject
-    lateinit var viewModelFactory: IntroViewModel.Factory
+    lateinit var viewModelFactory: BaseViewModelFactory
 
     private val viewModel: IntroViewModel by viewModels { viewModelFactory }
 

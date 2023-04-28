@@ -3,6 +3,7 @@ package ru.sergean.nasaapp.domain.user
 import ru.sergean.nasaapp.data.user.UserRepository
 import javax.inject.Inject
 
+
 class RegisterUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {

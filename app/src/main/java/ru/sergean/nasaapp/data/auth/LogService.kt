@@ -3,13 +3,14 @@ package ru.sergean.nasaapp.data.auth
 import android.util.Log
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import ru.sergean.nasaapp.di.app.AppScope
+import ru.sergean.nasaapp.di.login.LoginScope
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TAG = "RegLog"
 
-@Singleton
+@AppScope
 class RegistrationLogService @Inject constructor(database: FirebaseDatabase) {
 
     private val reference = database.getReference("logs")

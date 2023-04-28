@@ -1,19 +1,15 @@
 package ru.sergean.nasaapp.presentation.ui.favorites
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import ru.sergean.nasaapp.TAG
-import ru.sergean.nasaapp.domain.images.AddToFavoritesUseCase
 import ru.sergean.nasaapp.domain.images.FetchFavoriteImagesUseCase
 import ru.sergean.nasaapp.domain.images.RemoveFromFavoritesUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.presentation.ui.favorites.items.mapFavoriteImageItem
 import javax.inject.Inject
 
-class FavoritesViewModel(
+class FavoritesViewModel @Inject constructor(
     private val fetchImagesUseCase: FetchFavoriteImagesUseCase,
-    private val addToFavoritesUseCase: AddToFavoritesUseCase,
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
 ) : BaseViewModel<FavoritesState, FavoritesAction, FavoritesEffect>(
     initialState = FavoritesState()
@@ -72,22 +68,4 @@ class FavoritesViewModel(
             }
         }
     }
-
-    @Suppress("UNCHECKED_CAST")
-    class Factory @Inject constructor(
-        private val fetchImagesUseCase: FetchFavoriteImagesUseCase,
-        private val addToFavoritesUseCase: AddToFavoritesUseCase,
-        private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
-    ) : ViewModelProvider.Factory {
-
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
-                return FavoritesViewModel(
-                    fetchImagesUseCase, addToFavoritesUseCase, removeFromFavoritesUseCase
-                ) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
-    }
-
 }

@@ -1,44 +1,28 @@
 package ru.sergean.nasaapp.presentation.ui.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.datastore.SettingDataStore
 import javax.inject.Inject
 
-class MainViewModel(private val dataStore: SettingDataStore) : ViewModel() {
+class MainViewModel @Inject constructor(dataStore: SettingDataStore) : ViewModel() {
 
-    private val _mode: MutableStateFlow<StartMode?> = MutableStateFlow(value = null)
-    val mode: StateFlow<StartMode?>
-        get() = _mode
+    val mode: SharedFlow<StartMode> =
+        dataStore.startMode.shareIn(viewModelScope, started = SharingStarted.Eagerly, replay = 1)
 
-    init {
-        viewModelScope.launch {
-            dataStore.settingsBundle.collect { settings ->
-                when {
-                    settings.isUserLogged -> _mode.value = StartMode.ShowApp
-                    settings.isIntroShowed -> _mode.value = StartMode.SkipIntro
-                    else -> _mode.value = StartMode.ShowIntro
-                }
-                cancel()
+    private val SettingDataStore.startMode: Flow<StartMode>
+        get() = settingsBundle.map { settings ->
+            Log.d(TAG, "MainViewModel: $settings")
+            when {
+                settings.isUserLogged -> StartMode.ShowApp
+                settings.isIntroShowed -> StartMode.SkipIntro
+                else -> StartMode.ShowIntro
             }
         }
-    }
-
-    class Factory @Inject constructor(
-        private val dataStore: SettingDataStore
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-                return MainViewModel(dataStore) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
-    }
 }

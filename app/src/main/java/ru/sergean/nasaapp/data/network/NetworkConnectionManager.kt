@@ -4,7 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import kotlinx.coroutines.flow.*
-import ru.sergean.nasaapp.di.ApplicationContext
+import ru.sergean.nasaapp.di.app.AppScope
+import ru.sergean.nasaapp.di.app.ApplicationContext
 import javax.inject.Inject
 
 interface NetworkConnectionManager {
@@ -18,6 +19,7 @@ interface NetworkConnectionManager {
 val NetworkConnectionManager.isNetworkConnected: Boolean
     get() = networkConnectionState.value
 
+@AppScope
 class NetworkConnectionManagerImpl @Inject constructor(
     @ApplicationContext context: Context
 ) : NetworkConnectionManager {
@@ -30,7 +32,7 @@ class NetworkConnectionManagerImpl @Inject constructor(
     @Volatile
     private var networkIsListening = false
 
-    private val _networkConnectionState = MutableStateFlow(value = false)
+    private val _networkConnectionState = MutableStateFlow(value = true)
 
     override val networkConnectionState: StateFlow<Boolean> =
         _networkConnectionState.asStateFlow()

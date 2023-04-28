@@ -9,7 +9,7 @@ import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.utils.isMatch
 import javax.inject.Inject
 
-class RegistrationViewModel(
+class RegistrationViewModel @Inject constructor(
 ) : BaseViewModel<RegistrationState, RegistrationAction, RegistrationEffect>(
     initialState = RegistrationState()
 ) {
@@ -62,16 +62,5 @@ class RegistrationViewModel(
 
     companion object {
         private const val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,20}\$"
-    }
-
-    class Factory @Inject constructor() : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
-                return RegistrationViewModel() as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
     }
 }

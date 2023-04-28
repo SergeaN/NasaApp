@@ -1,11 +1,10 @@
-package ru.sergean.nasaapp.di
+package ru.sergean.nasaapp.di.app
 
 import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import ru.sergean.nasaapp.data.images.local.*
-import javax.inject.Singleton
 
 private const val DATABASE_NAME = "nasa_app_db"
 
@@ -13,20 +12,12 @@ private const val DATABASE_NAME = "nasa_app_db"
 class DatabaseModule {
 
     @Provides
-    @Singleton
-    fun provideImagesLocalDataSource(dataSource: ImageLocalDataSourceImpl): ImagesLocalDataSource {
-        //return MockImagesLocalDataSource
-        return dataSource
-    }
-
-    @Provides
-    @Singleton
     fun provideNasaDao(appDatabase: AppDatabase): NasaDao {
         return appDatabase.nasaDao()
     }
 
     @Provides
-    @Singleton
+    @AppScope
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).build()
     }

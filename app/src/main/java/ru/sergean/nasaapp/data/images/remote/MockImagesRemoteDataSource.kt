@@ -1,6 +1,9 @@
 package ru.sergean.nasaapp.data.images.remote
 
-object MockImagesRemoteDataSource : ImagesRemoteDataSource {
+import dagger.Provides
+import javax.inject.Inject
+
+class MockImagesRemoteDataSource @Inject constructor() : ImagesRemoteDataSource {
 
     override suspend fun fetchImages(query: String): NasaResponse {
         return mockNasaResponse

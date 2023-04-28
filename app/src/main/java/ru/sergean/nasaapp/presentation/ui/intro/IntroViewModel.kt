@@ -8,7 +8,7 @@ import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.data.datastore.SettingDataStore
 import javax.inject.Inject
 
-class IntroViewModel(private val dataStore: SettingDataStore) : ViewModel() {
+class IntroViewModel @Inject constructor(private val dataStore: SettingDataStore) : ViewModel() {
 
     val data = listOf(
         IntroItemData(imageId = R.drawable.sun, textId = R.string.sun_text),
@@ -21,19 +21,6 @@ class IntroViewModel(private val dataStore: SettingDataStore) : ViewModel() {
     fun introShowed() {
         viewModelScope.launch {
             dataStore.introShowed()
-        }
-    }
-
-    class Factory @Inject constructor(
-        private val dataStore: SettingDataStore
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(IntroViewModel::class.java)) {
-                return IntroViewModel(dataStore) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

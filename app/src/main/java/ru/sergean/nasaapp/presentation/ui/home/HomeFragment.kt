@@ -1,7 +1,6 @@
 package ru.sergean.nasaapp.presentation.ui.home
 
 import android.content.Context
-import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,6 +24,7 @@ import ru.sergean.nasaapp.data.images.toImageModel
 import ru.sergean.nasaapp.databinding.FragmentHomeBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.FingerprintAdapter
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
+import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModelFactory
 import ru.sergean.nasaapp.presentation.ui.detail.DetailFragment
 import ru.sergean.nasaapp.presentation.ui.home.items.*
 import ru.sergean.nasaapp.utils.dp
@@ -34,7 +34,7 @@ import javax.inject.Inject
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     @Inject
-    lateinit var viewModelFactory: HomeViewModel.Factory
+    lateinit var viewModelFactory: BaseViewModelFactory
 
     private val viewModel: HomeViewModel by viewModels { viewModelFactory }
 
@@ -50,6 +50,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         requireActivity().window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         )
+        Log.d(TAG, "onAttach: ${viewModelFactory.viewModelClasses.size}")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -9,7 +9,7 @@ import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.presentation.ui.home.items.mapToImageItem
 import javax.inject.Inject
 
-class HomeViewModel(
+class HomeViewModel @Inject constructor(
     private val fetchImagesUseCase: FetchImagesUseCase
 ) : BaseViewModel<HomeState, HomeAction, HomeEffect>(initialState = HomeState()) {
 
@@ -61,19 +61,6 @@ class HomeViewModel(
                 Log.e(TAG, "HOME fetchImages:", e)
                 viewState.copy(progress = false)
             }
-        }
-    }
-
-    class Factory @Inject constructor(
-        private val fetchImagesUseCase: FetchImagesUseCase
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-                return HomeViewModel(fetchImagesUseCase) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

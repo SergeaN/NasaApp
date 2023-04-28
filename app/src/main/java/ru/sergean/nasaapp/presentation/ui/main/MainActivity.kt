@@ -1,6 +1,7 @@
 package ru.sergean.nasaapp.presentation.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -12,36 +13,59 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
+import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.data.network.NetworkConnectionManager
 import ru.sergean.nasaapp.databinding.ActivityMainBinding
+import ru.sergean.nasaapp.di.login.LoginComponent
+import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModelFactory
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity(R.layout.activity_main), LoginScreenCallbacks {
 
     @Inject
     lateinit var connectionManager: NetworkConnectionManager
 
     @Inject
-    lateinit var viewModelFactory: MainViewModel.Factory
+    lateinit var viewModelFactory: BaseViewModelFactory
 
     private val viewModel: MainViewModel by viewModels { viewModelFactory }
 
     private val binding by viewBinding(ActivityMainBinding::bind)
 
+    private var _loginComponent: LoginComponent? = null
+
+    override val loginComponent: LoginComponent
+        get() = checkNotNull(_loginComponent) {
+            "LoginComponent isn't initialized"
+        }
+
+    override fun createComponent() {
+        if (_loginComponent == null) {
+            _loginComponent = appComponent.loginComponent().build()
+        }
+    }
+
+    override fun destroyComponent() {
+        _loginComponent = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         appComponent.inject(activity = this)
 
         val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition { viewModel.mode.value == null }
+        splashScreen.setKeepOnScreenCondition { false }
 
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
             viewModel.mode.collect { startMode ->
-                if (startMode != null) setupNavGraph(startMode)
+                Log.d(TAG, "onCreate: $startMode")
+                setupNavGraph(startMode)
+                cancel()
             }
         }
 
@@ -86,6 +110,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun observeInternetConnection() {
         lifecycleScope.launch {
             connectionManager.networkConnectionState.flowWithLifecycle(lifecycle).collect {
+                Log.d(TAG, "observeInternetConnection: $it")
                 if (!it) {
                     Snackbar.make(
                         binding.root, R.string.no_internet_connection, Snackbar.LENGTH_INDEFINITE
@@ -94,6 +119,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
     }
-
 }
 
+interface LoginScreenCallbacks {
+    val loginComponent: LoginComponent
+
+    fun createComponent()
+    fun destroyComponent()
+}

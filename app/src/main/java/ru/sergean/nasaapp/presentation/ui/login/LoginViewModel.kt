@@ -15,7 +15,7 @@ import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.utils.isMatch
 import javax.inject.Inject
 
-class LoginViewModel(
+class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val settingDataStore: SettingDataStore,
 ) : BaseViewModel<LoginState, LoginAction, LoginEffect>(
@@ -76,26 +76,7 @@ class LoginViewModel(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.d(TAG, "onCleared: ")
-    }
-
     companion object {
         private const val PASSWORD_PATTERN = ".{4,20}\$"
-    }
-
-    class Factory @Inject constructor(
-        private val loginUseCase: LoginUseCase,
-        private val settingDataStore: SettingDataStore,
-    ) : ViewModelProvider.Factory {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-                return LoginViewModel(loginUseCase, settingDataStore) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
     }
 }

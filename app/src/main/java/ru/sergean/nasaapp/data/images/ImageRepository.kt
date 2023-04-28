@@ -9,9 +9,10 @@ import ru.sergean.nasaapp.data.images.local.ImagesLocalDataSource
 import ru.sergean.nasaapp.data.images.local.toImageLocalModel
 import ru.sergean.nasaapp.data.images.remote.mapToImageRemote
 import ru.sergean.nasaapp.data.images.remote.ImagesRemoteDataSource
-import ru.sergean.nasaapp.data.images.remote.MockImagesRemoteDataSource
+import ru.sergean.nasaapp.di.app.AppScope
 import javax.inject.Inject
 
+@AppScope
 class ImageRepository @Inject constructor(
     private val remoteDataSource: ImagesRemoteDataSource,
     private val localDataSource: ImagesLocalDataSource,

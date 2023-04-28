@@ -23,6 +23,7 @@ import ru.sergean.nasaapp.data.images.toImageModel
 import ru.sergean.nasaapp.databinding.FragmentFavoritesBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.FingerprintAdapter
 import ru.sergean.nasaapp.presentation.ui.base.adapter.Item
+import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModelFactory
 import ru.sergean.nasaapp.presentation.ui.detail.DetailFragment
 import ru.sergean.nasaapp.presentation.ui.favorites.items.FavoriteImageItem
 import ru.sergean.nasaapp.presentation.ui.favorites.items.FavoritesImageItemFingerprint
@@ -32,7 +33,7 @@ import javax.inject.Inject
 class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     @Inject
-    lateinit var viewModeFactory: FavoritesViewModel.Factory
+    lateinit var viewModeFactory: BaseViewModelFactory
 
     private val viewModel: FavoritesViewModel by viewModels { viewModeFactory }
 

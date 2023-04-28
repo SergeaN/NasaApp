@@ -10,11 +10,11 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.sergean.nasaapp.TAG
-import ru.sergean.nasaapp.di.ApplicationContext
+import ru.sergean.nasaapp.di.app.AppScope
+import ru.sergean.nasaapp.di.app.ApplicationContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@AppScope
 class SettingDataStore @Inject constructor(@ApplicationContext context: Context) {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")

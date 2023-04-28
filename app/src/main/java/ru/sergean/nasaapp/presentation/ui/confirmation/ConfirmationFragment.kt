@@ -4,14 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -21,10 +18,9 @@ import com.fraggjkee.smsconfirmationview.SmsConfirmationView
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
-import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.databinding.FragmentConfirmationBinding
+import ru.sergean.nasaapp.presentation.ui.main.LoginScreenCallbacks
 import ru.sergean.nasaapp.presentation.ui.registration.RegistrationData
-import ru.sergean.nasaapp.presentation.ui.registration.RegistrationFragment
 import ru.sergean.nasaapp.utils.parcelableArgs
 import ru.sergean.nasaapp.utils.showSnackbar
 import ru.sergean.nasaapp.utils.stringArgs
@@ -46,12 +42,22 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
 
     private var inputManager: InputMethodManager? = null
 
-    override fun onAttach(context: Context) {
-        context.appComponent.inject(fragment = this)
-        super.onAttach(context)
-        viewModel.dispatch(ConfirmationAction.VerifyNumber(activity = requireActivity()))
+    private var callbacks: LoginScreenCallbacks? = null
 
+    override fun onAttach(context: Context) {
+        callbacks = (context as LoginScreenCallbacks).apply {
+            createComponent()
+            loginComponent.inject(fragment = this@ConfirmationFragment)
+        }
+        super.onAttach(context)
+
+        viewModel.dispatch(ConfirmationAction.VerifyNumber(activity = requireActivity()))
         inputManager = ContextCompat.getSystemService(context, InputMethodManager::class.java)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,6 +127,7 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
 
                         showSnackbar(R.string.success_confirmation)
                         navigateToApp()
+                        callbacks?.destroyComponent()
                     }
                 }
             }
