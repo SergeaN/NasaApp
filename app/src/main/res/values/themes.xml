@@ -1,5 +1,4 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Theme.NasaApp" parent="Base.Theme.NasaApp" />
 
     <style name="Base.Theme.NasaApp" parent="Base.V24.Theme.NasaApp" />

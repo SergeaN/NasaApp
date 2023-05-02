@@ -17,13 +17,11 @@
         tools:text="No favorite images founded"
         tools:visibility="visible" />
 
-
     <ProgressBar
         android:id="@+id/fav_progress_bar"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/image_recycler_view"

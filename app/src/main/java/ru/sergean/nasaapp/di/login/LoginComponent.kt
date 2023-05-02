@@ -16,7 +16,6 @@ interface LoginComponent {
 
     @Subcomponent.Builder
     interface Builder {
-
         fun build(): LoginComponent
     }
 }

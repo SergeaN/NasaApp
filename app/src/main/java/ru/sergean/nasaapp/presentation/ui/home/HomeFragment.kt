@@ -47,10 +47,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onAttach(context: Context) {
         context.appComponent.inject(fragment = this)
         super.onAttach(context)
+
         requireActivity().window.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         )
-        Log.d(TAG, "onAttach: ${viewModelFactory.viewModelClasses.size}")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

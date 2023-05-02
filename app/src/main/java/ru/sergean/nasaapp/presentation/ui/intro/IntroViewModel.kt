@@ -3,6 +3,7 @@ package ru.sergean.nasaapp.presentation.ui.intro
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.data.datastore.SettingDataStore
@@ -19,7 +20,7 @@ class IntroViewModel @Inject constructor(private val dataStore: SettingDataStore
     var currentPosition: Int = 0
 
     fun introShowed() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             dataStore.introShowed()
         }
     }

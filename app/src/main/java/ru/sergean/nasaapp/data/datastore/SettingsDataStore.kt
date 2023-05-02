@@ -30,7 +30,11 @@ class SettingDataStore @Inject constructor(@ApplicationContext context: Context)
     }
 
     suspend fun introShowed() {
-        dataStore.edit { it[introKey] = true }
+        try {
+            dataStore.edit { it[introKey] = true }
+        } catch (e: Exception) {
+            Log.e(TAG, "introShowed:", e)
+        }
     }
 
     suspend fun login() {

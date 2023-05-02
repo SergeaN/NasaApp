@@ -2,14 +2,12 @@ package ru.sergean.nasaapp.presentation.ui.intro
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.databinding.FragmentIntroBinding
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModelFactory

@@ -14,8 +14,7 @@ data class LoginState(
 ) : State
 
 val LoginState.isDataValid
-    get() = emailError == null && passwordError == null
-            && email != null && password != null
+    get() = emailError == null && passwordError == null && email != null && password != null
 
 sealed interface LoginAction : Action {
     object SignIn : LoginAction

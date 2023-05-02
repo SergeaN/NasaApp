@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".presentation.ui.login.LoginFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp"
-        tools:context=".presentation.ui.login.LoginFragment">
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/login_image"
@@ -31,7 +31,6 @@
             android:text="@string/sign_in_to_nasa_app"
             android:textSize="16sp" />
 
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_input"
             style="@style/Widget.NasaApp.OutlinedInput"
@@ -44,16 +43,13 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email_edit_text"
+                style="@style/Widget.NasaApp.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans_regular"
                 android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:padding="8dp"
-                android:textSize="14sp" />
+                android:inputType="textEmailAddress" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_input"
@@ -67,13 +63,12 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_edit_text"
+                style="@style/Widget.NasaApp.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/noto_sans_regular"
                 android:hint="@string/password"
-                android:inputType="textPassword"
-                android:padding="8dp"
-                android:textSize="14sp" />
+                android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -125,4 +120,5 @@
         </FrameLayout>
 
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

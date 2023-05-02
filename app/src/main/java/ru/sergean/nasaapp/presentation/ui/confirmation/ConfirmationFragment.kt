@@ -1,6 +1,9 @@
 package ru.sergean.nasaapp.presentation.ui.confirmation
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -20,10 +24,9 @@ import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.databinding.FragmentConfirmationBinding
 import ru.sergean.nasaapp.presentation.ui.main.LoginScreenCallbacks
+import ru.sergean.nasaapp.presentation.ui.main.NetworkViewModel
 import ru.sergean.nasaapp.presentation.ui.registration.RegistrationData
-import ru.sergean.nasaapp.utils.parcelableArgs
-import ru.sergean.nasaapp.utils.showSnackbar
-import ru.sergean.nasaapp.utils.stringArgs
+import ru.sergean.nasaapp.utils.*
 import javax.inject.Inject
 
 class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
@@ -37,6 +40,8 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
     private val viewModel: ConfirmationViewModel by viewModels {
         viewModelFactory.create(registrationData)
     }
+
+    private val networkViewModel: NetworkViewModel by activityViewModels()
 
     private val binding by viewBinding(FragmentConfirmationBinding::bind)
 
@@ -73,7 +78,7 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
             }
 
             resendText.setOnClickListener {
-                showSnackbar(R.string.try_later)
+                sendReport(formattedPhoneNumber, hasVpn = networkViewModel.vpnState.value)
             }
         }
 
@@ -145,6 +150,23 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
 
     private fun navigateToApp() {
         findNavController().navigate(R.id.action_confirmationFragment_to_homeFragment)
+    }
+
+    private fun sendReport(formattedNumber: String, hasVpn: Boolean) {
+        val reportText = requireContext().createReportText(formattedNumber, hasVpn)
+
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.report_email)))
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.report_subject))
+            putExtra(Intent.EXTRA_TEXT, reportText)
+        }
+
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            showToast(R.string.no_email_apps_found)
+        }
     }
 
     companion object {

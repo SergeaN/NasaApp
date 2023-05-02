@@ -19,7 +19,6 @@ inline fun <reified T : Activity> Context.startActivity() {
     startActivity(intent)
 }
 
-
 inline fun <reified T : Parcelable> parcelableArgs(key: String): ReadOnlyProperty<Fragment, T> {
     return ReadOnlyProperty { thisRef, _ ->
         val args = thisRef.requireArguments()
@@ -51,7 +50,6 @@ fun stringArgs(key: String): ReadOnlyProperty<Fragment, String> {
         requireNotNull(args.getString(key))
     }
 }
-
 
 fun Fragment.showToast(message: String) {
     Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()

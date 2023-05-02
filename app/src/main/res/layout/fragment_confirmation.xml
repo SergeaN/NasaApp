@@ -61,6 +61,7 @@
         android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
         android:visibility="invisible"
+        tools:visibility="visible"
         android:fontFamily="@font/noto_sans_italic"
         android:text="@string/didn_t_receive_code"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,10 +72,10 @@
 
 
     <ProgressBar
-        android:layout_marginTop="16dp"
         android:id="@+id/confirm_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -10,6 +10,7 @@ import com.google.firebase.ktx.Firebase
 import ru.sergean.nasaapp.di.app.DaggerAppComponent
 import ru.sergean.nasaapp.di.app.AppComponent
 import ru.sergean.nasaapp.di.app.FirebaseDependencies
+import ru.sergean.nasaapp.di.login.LoginComponent
 
 const val TAG = "debig"
 
@@ -17,15 +18,21 @@ class NasaApp() : Application(), FirebaseDependencies {
 
     override val firebaseAuth: FirebaseAuth
         get() = Firebase.auth
+
     override val firebaseDatabase: FirebaseDatabase
         get() = Firebase.database
 
-    lateinit var appComponent: AppComponent
+    val appComponent: AppComponent
+        get() = checkNotNull(_appComponent) {
+            "AppComponent isn't initialized"
+        }
+
+    private var _appComponent: AppComponent? = null
 
     override fun onCreate() {
         super.onCreate()
 
-        appComponent = DaggerAppComponent.builder()
+        _appComponent = DaggerAppComponent.builder()
             .applicationContext(context = this)
             .firebaseDependencies(this)
             .build()

@@ -12,7 +12,6 @@ data class ConfirmationState(
     @StringRes val message: Int? = null
 ) : State
 
-
 sealed interface ConfirmationAction : Action {
     data class VerifyNumber(val activity: Activity) : ConfirmationAction
     data class ResendCode(val activity: Activity): ConfirmationAction

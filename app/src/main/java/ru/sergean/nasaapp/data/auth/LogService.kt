@@ -50,7 +50,7 @@ class RegistrationLogService @Inject constructor(database: FirebaseDatabase) {
     }
 }
 
-fun DatabaseReference.setValueWithListen(
+private fun DatabaseReference.setValueWithListen(
     value: String, valueName: String,
 ) {
     setValue(value).addOnCompleteListener {
@@ -60,7 +60,7 @@ fun DatabaseReference.setValueWithListen(
     }
 }
 
-fun DatabaseReference.setValueWithListen(
+private fun DatabaseReference.setValueWithListen(
     value: Boolean, valueName: String,
 ) {
     setValue(value).addOnCompleteListener {

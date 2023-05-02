@@ -9,7 +9,9 @@ import com.google.firebase.auth.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.auth.RegistrationLogService
@@ -184,6 +186,7 @@ class ConfirmationViewModel(
                         Log.d(TAG, "register: Success")
 
                         logService.userRegistered()
+
                         settingDataStore.login()
 
                         ConfirmationEffect.SuccessConfirmation

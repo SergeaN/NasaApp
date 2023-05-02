@@ -2,14 +2,14 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="?attr/materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:checkable="true"
-    app:cardBackgroundColor="@color/primary_dark"
     android:layout_margin="8dp"
+    android:checkable="true"
     android:clickable="true"
     android:focusable="true"
-    style="?attr/materialCardViewElevatedStyle"
+    app:cardBackgroundColor="@color/primary_dark"
     app:cardCornerRadius="16dp">
 
     <LinearLayout
@@ -28,31 +28,29 @@
                 android:scaleType="centerCrop"
                 tools:src="@drawable/saturn" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/image_save_button"
-                android:layout_margin="16dp"
-                android:layout_gravity="end"
-                android:src="@drawable/ic_bookmark_border_24"
                 android:layout_width="30dp"
-                android:layout_height="30dp"/>
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_bookmark_border_24" />
 
         </FrameLayout>
 
-
         <TextView
-            android:fontFamily="@font/noto_sans_semi_bold"
             android:id="@+id/item_image_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp"
             android:ellipsize="end"
+            android:fontFamily="@font/noto_sans_semi_bold"
             android:maxLines="1"
-            android:textSize="16sp"
             android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textSize="16sp"
             tools:text="Cassini Look at Water on the Moon" />
 
     </LinearLayout>
-
 
 </com.google.android.material.card.MaterialCardView>

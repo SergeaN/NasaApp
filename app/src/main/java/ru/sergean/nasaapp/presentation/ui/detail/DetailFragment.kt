@@ -24,20 +24,14 @@ import javax.inject.Inject
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
-    companion object {
-        const val ARG_IMAGE = "arg_image_for_detail"
-    }
-
     private val image: ImageModel by parcelableArgs(ARG_IMAGE)
-
-    private val binding by viewBinding(FragmentDetailBinding::bind)
 
     @Inject
     lateinit var viewModelFactory: DetailFactory.Factory
 
-    private val viewModel: DetailViewModel by viewModels {
-        viewModelFactory.create(image.nasaId)
-    }
+    private val viewModel: DetailViewModel by viewModels { viewModelFactory.create(image.nasaId) }
+
+    private val binding by viewBinding(FragmentDetailBinding::bind)
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(fragment = this)
@@ -62,7 +56,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
             favoriteButton.setOnClickListener { viewModel.dispatch(DetailAction.ChangeSaving) }
         }
-
     }
 
     private fun observeState() {
@@ -71,7 +64,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 Log.d(TAG, "observeState: $it")
 
                 val stateImage = it.image
-
                 binding.run {
                     favoriteButton.isEnabled = it.progress.not()
                     favoriteButton.setIcon(it.imageSaved)
@@ -90,9 +82,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             viewModel.observeSideEffect().flowWithLifecycle(lifecycle).collect {
                 Log.d(TAG, "observeSideEffects: $it")
                 when (it) {
-                    is DetailEffect.Message -> {
-                        showSnackbar(it.text)
-                    }
+                    is DetailEffect.Message -> showSnackbar(it.text)
                 }
             }
         }
@@ -112,5 +102,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             false -> R.string.add_to_favorites
         }
         setText(textRes)
+    }
+
+    companion object {
+        const val ARG_IMAGE = "arg_image_for_detail"
     }
 }
