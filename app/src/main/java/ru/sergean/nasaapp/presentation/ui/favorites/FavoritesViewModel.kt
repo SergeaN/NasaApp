@@ -1,7 +1,7 @@
 package ru.sergean.nasaapp.presentation.ui.favorites
 
-import android.util.Log
-import ru.sergean.nasaapp.TAG
+import ru.sergean.nasaapp.R
+import ru.sergean.nasaapp.data.base.ResultWrapper
 import ru.sergean.nasaapp.domain.images.FetchFavoriteImagesUseCase
 import ru.sergean.nasaapp.domain.images.RemoveFromFavoritesUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
@@ -25,7 +25,7 @@ class FavoritesViewModel @Inject constructor(
 
     private fun reduce(action: FavoritesAction.Refresh) {
         if (viewState.progress) {
-            sideEffect = FavoritesEffect.Message(text = "In process!")
+            sideEffect = FavoritesEffect.Message(text = R.string.in_process)
         } else {
             fetchImages(query = viewState.query)
         }
@@ -33,7 +33,7 @@ class FavoritesViewModel @Inject constructor(
 
     private fun reduce(action: FavoritesAction.ChangeQuery) {
         if (viewState.progress) {
-            sideEffect = FavoritesEffect.Message(text = "In process!")
+            sideEffect = FavoritesEffect.Message(text = R.string.in_process)
         } else {
             viewState = viewState.copy(query = action.query)
         }
@@ -42,29 +42,29 @@ class FavoritesViewModel @Inject constructor(
     private fun fetchImages(query: String) {
         viewState = viewState.copy(progress = true)
         withViewModelScope {
-            viewState = try {
-                val images = fetchImagesUseCase.invoke(query).map { it.mapFavoriteImageItem() }
-                Log.d(TAG, "fetchImages: $viewState")
+            viewState = when (val result = fetchImagesUseCase(query)) {
+                is ResultWrapper.Success -> {
+                    val images = result.data.map { it.mapFavoriteImageItem() }
 
-                if (viewState.images != images) viewState.copy(progress = false, images = images)
-                else viewState.copy(progress = false)
-            } catch (e: Exception) {
-                Log.e(TAG, "fetchFavorites:", e)
-                viewState.copy(progress = false)
+                    if (viewState.images != images) {
+                        viewState.copy(progress = false, images = images)
+                    } else {
+                        viewState.copy(progress = false)
+                    }
+                }
+                is ResultWrapper.Failure -> {
+                    viewState.copy(progress = false)
+                }
             }
         }
     }
 
     private fun reduce(action: FavoritesAction.RemoveFromFavorites) {
         withViewModelScope {
-            try {
-                removeFromFavoritesUseCase(action.nasaId)
-                val newImages = viewState.images.filter { it.nasaId != action.nasaId }
-                if (newImages.size != viewState.images.size) {
-                    viewState = viewState.copy(images = newImages)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "removeFromFavorites: ", e)
+            removeFromFavoritesUseCase(action.nasaId)
+            val newImages = viewState.images.filter { it.nasaId != action.nasaId }
+            if (newImages.size != viewState.images.size) {
+                viewState = viewState.copy(images = newImages)
             }
         }
     }

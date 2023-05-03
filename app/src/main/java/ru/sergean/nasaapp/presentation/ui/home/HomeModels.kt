@@ -1,5 +1,6 @@
 package ru.sergean.nasaapp.presentation.ui.home
 
+import androidx.annotation.StringRes
 import ru.sergean.nasaapp.presentation.ui.base.arch.Action
 import ru.sergean.nasaapp.presentation.ui.base.arch.Effect
 import ru.sergean.nasaapp.presentation.ui.base.arch.State
@@ -17,5 +18,5 @@ sealed interface HomeAction : Action {
 }
 
 sealed interface HomeEffect : Effect {
-    data class Message(val text: String) : HomeEffect
+    data class Message(@StringRes val text: Int) : HomeEffect
 }

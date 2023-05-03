@@ -19,6 +19,7 @@ inline fun <reified T : Activity> Context.startActivity() {
     startActivity(intent)
 }
 
+@Suppress("DEPRECATION")
 inline fun <reified T : Parcelable> parcelableArgs(key: String): ReadOnlyProperty<Fragment, T> {
     return ReadOnlyProperty { thisRef, _ ->
         val args = thisRef.requireArguments()
@@ -31,6 +32,7 @@ inline fun <reified T : Parcelable> parcelableArgs(key: String): ReadOnlyPropert
     }
 }
 
+@Suppress("DEPRECATION")
 inline fun <reified T : Serializable> serializableArgs(key: String): ReadOnlyProperty<Fragment, T> {
     return ReadOnlyProperty { thisRef, _ ->
         val args = thisRef.requireArguments()

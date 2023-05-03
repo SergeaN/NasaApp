@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.sergean.nasaapp.TAG
+import ru.sergean.nasaapp.data.base.ResultWrapper
 import ru.sergean.nasaapp.data.images.local.ImagesLocalDataSource
 import ru.sergean.nasaapp.data.images.local.toImageLocalModel
 import ru.sergean.nasaapp.data.images.remote.mapToImageRemote
@@ -17,44 +18,64 @@ class ImageRepository @Inject constructor(
     private val remoteDataSource: ImagesRemoteDataSource,
     private val localDataSource: ImagesLocalDataSource,
 ) {
-    suspend fun fetchImages(query: String): List<ImageModel> {
-        Log.d(TAG, "fetchImages: $query")
+    suspend fun fetchImages(query: String): ResultWrapper<List<ImageModel>> {
 
-        val localImages: List<ImageModel> =
+        val localImages: List<ImageModel> = try {
             localDataSource.fetchAllImages(query).map { it.toImageModel() }
+        } catch (e: Exception) {
+            emptyList()
+        }
 
-        val remoteImages =
+        val remoteImages = try {
             remoteDataSource.fetchImages(query).mapToImageRemote().map { it.toImageModel() }
+        } catch (e: Exception) {
+            emptyList()
+        }
 
         saveImages(remoteImages)
-
-        Log.d(TAG, "Local: ${localImages.size}")
-        Log.d(TAG, "Remote: ${remoteImages.size}")
 
         val resultSet = buildSet {
             addAll(localImages)
             addAll(remoteImages)
         }.sortedBy { it.dateCreated }
 
-        Log.d(TAG, "Result: ${resultSet.size}")
-        return resultSet.toList()
+        return ResultWrapper.Success(data = resultSet)
     }
 
-    suspend fun fetchFavoriteImages(query: String): List<ImageModel> {
-        val localImages = localDataSource.fetchFavoriteImages(query)
-        return localImages.map { it.toImageModel() }
+    suspend fun fetchFavoriteImages(query: String): ResultWrapper<List<ImageModel>> {
+        return try {
+            val images = localDataSource.fetchFavoriteImages(query).map { it.toImageModel() }
+            ResultWrapper.Success(data = images)
+        } catch (e: Exception) {
+            Log.e(TAG, "fetchFavoriteImages:", e)
+            ResultWrapper.Failure(message = e.message ?: "Error")
+        }
     }
 
     suspend fun addToFavorites(nasaId: String) {
-        localDataSource.addToFavorites(nasaId)
+        try {
+            localDataSource.addToFavorites(nasaId)
+        } catch (e: Exception) {
+            Log.e(TAG, "addToFavorites:", e)
+        }
     }
 
     suspend fun removeFromFavorites(nasaId: String) {
-        localDataSource.removeFromFavorites(nasaId)
+        try {
+            localDataSource.removeFromFavorites(nasaId)
+        } catch (e: Exception) {
+            Log.e(TAG, "removeFromFavorites:", e)
+        }
     }
 
-    suspend fun getImage(nasaId: String): ImageModel? {
-        return localDataSource.getImage(nasaId)?.toImageModel()
+    suspend fun getImage(nasaId: String): ResultWrapper<ImageModel> {
+        return try {
+            localDataSource.getImage(nasaId)?.toImageModel()?.let {
+                ResultWrapper.Success(data = it)
+            } ?: throw Exception("Image with id=$nasaId not found")
+        } catch (e: Exception) {
+            ResultWrapper.Failure(message = e.message ?: "Error")
+        }
     }
 
     private suspend fun saveImages(images: List<ImageModel>) =

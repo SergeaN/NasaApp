@@ -41,7 +41,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding by viewBinding(FragmentHomeBinding::bind)
 
     private val items: MutableList<Item> = mutableListOf()
-
     private var fingerprintAdapter: FingerprintAdapter? = null
 
     override fun onAttach(context: Context) {

@@ -4,6 +4,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import ru.sergean.nasaapp.R
+import ru.sergean.nasaapp.data.user.PASSWORD_PATTERN
 import ru.sergean.nasaapp.domain.user.RegisterUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.utils.isMatch
@@ -58,9 +59,5 @@ class RegistrationViewModel @Inject constructor(
         } else {
             viewState.copy(password = action.password, passwordError = R.string.password_error)
         }
-    }
-
-    companion object {
-        private const val PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{4,20}\$"
     }
 }

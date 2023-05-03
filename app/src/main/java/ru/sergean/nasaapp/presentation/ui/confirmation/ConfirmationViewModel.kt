@@ -2,22 +2,13 @@ package ru.sergean.nasaapp.presentation.ui.confirmation
 
 import android.app.Activity
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.auth.RegistrationLogService
+import ru.sergean.nasaapp.data.base.ResultWrapper
 import ru.sergean.nasaapp.data.datastore.SettingDataStore
-import ru.sergean.nasaapp.data.user.RegisterResult
-import ru.sergean.nasaapp.data.user.UserService
 import ru.sergean.nasaapp.domain.user.RegisterUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.presentation.ui.registration.RegistrationData
@@ -173,62 +164,23 @@ class ConfirmationViewModel(
     }
 
     private fun register() {
-        Log.d(TAG, "Start register: $registrationData")
         withViewModelScope {
-            sideEffect = try {
-                val result = registerUseCase.invoke(
-                    registrationData.name, registrationData.email,
-                    registrationData.phoneNumber, registrationData.password
-                )
-                Log.d(TAG, "register: $result")
-                when (result) {
-                    is RegisterResult.Success -> {
-                        Log.d(TAG, "register: Success")
+            val result = registerUseCase.invoke(
+                registrationData.name, registrationData.email,
+                registrationData.phoneNumber, registrationData.password
+            )
 
-                        logService.userRegistered()
+            sideEffect = when (result) {
+                is ResultWrapper.Success -> {
+                    logService.userRegistered()
+                    settingDataStore.login()
 
-                        settingDataStore.login()
-
-                        ConfirmationEffect.SuccessConfirmation
-                    }
-                    is RegisterResult.Error -> {
-                        Log.d(TAG, "register: Error")
-
-                        ConfirmationEffect.AuthError(Exception(result.exception))
-                    }
+                    ConfirmationEffect.SuccessConfirmation
                 }
-
-            } catch (e: Exception) {
-                Log.d(TAG, "register: ${e.localizedMessage}")
-                ConfirmationEffect.AuthError(e)
+                is ResultWrapper.Failure -> {
+                    ConfirmationEffect.AuthError(Exception(result.message))
+                }
             }
         }
-
-    }
-}
-
-class ConfirmationViewModelFactory @AssistedInject constructor(
-    @Assisted("reg_data") private val registrationData: RegistrationData,
-    private val auth: FirebaseAuth,
-    private val registerUseCase: RegisterUseCase,
-    private val settingDataStore: SettingDataStore,
-    private val logService: RegistrationLogService,
-) : ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ConfirmationViewModel::class.java)) {
-            return ConfirmationViewModel(
-                registrationData, auth, registerUseCase, settingDataStore, logService
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-
-    @AssistedFactory
-    interface Factory {
-        fun create(
-            @Assisted("reg_data") registrationData: RegistrationData
-        ): ConfirmationViewModelFactory
     }
 }

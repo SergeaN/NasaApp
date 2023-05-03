@@ -12,8 +12,14 @@ data class RegisterResponse(
     val error: String? = null,
 )
 
-sealed interface RegisterResult {
-    data class Success(val token: String) : RegisterResult
-    data class Error(val exception: Exception) : RegisterResult
+data class RegisterInfo(
+    val token: String
+)
+
+fun RegisterResponse.mapToInfo(): RegisterInfo = when {
+    error != null -> throw Exception("Register error: $error")
+    token == null -> throw Exception("Token error")
+    else -> RegisterInfo(token)
 }
+
 

@@ -27,7 +27,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private val image: ImageModel by parcelableArgs(ARG_IMAGE)
 
     @Inject
-    lateinit var viewModelFactory: DetailFactory.Factory
+    lateinit var viewModelFactory: DetailViewModelFactory.Factory
 
     private val viewModel: DetailViewModel by viewModels { viewModelFactory.create(image.nasaId) }
 
@@ -40,8 +40,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Log.d(TAG, "onViewCreated: $image")
 
         observeState()
         observeSideEffects()

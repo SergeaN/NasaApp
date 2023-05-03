@@ -10,7 +10,12 @@ data class LoginResponse(
     val error: String? = null,
 )
 
-sealed interface LoginResult {
-    data class Success(val token: String) : LoginResult
-    data class Error(val exception: Exception) : LoginResult
+data class LoginInfo(
+    val token: String
+)
+
+fun LoginResponse.mapToInfo(): LoginInfo = when {
+    error != null -> throw Exception("Login error: $error")
+    token == null -> throw Exception("Token error")
+    else -> LoginInfo(token)
 }

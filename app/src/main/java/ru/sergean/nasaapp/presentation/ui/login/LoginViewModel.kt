@@ -1,15 +1,11 @@
 package ru.sergean.nasaapp.presentation.ui.login
 
-import android.util.Log
 import android.util.Patterns
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
+import ru.sergean.nasaapp.data.base.ResultWrapper
 import ru.sergean.nasaapp.data.datastore.SettingDataStore
-import ru.sergean.nasaapp.data.user.LoginResult
+import ru.sergean.nasaapp.data.user.PASSWORD_PATTERN
 import ru.sergean.nasaapp.domain.user.LoginUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.utils.isMatch
@@ -50,33 +46,18 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun signIn(email: String, password: String) {
+        viewState = viewState.copy(progress = true)
         withViewModelScope {
-            viewState = viewState.copy(progress = true)
-            try {
-                Log.d(TAG, "signIn: $email $password")
-                delay(timeMillis = 5000)
-                Log.d(TAG, "signIn")
-                sideEffect = when (val result = loginUseCase(email, password)) {
-                    is LoginResult.Success -> {
-                        Log.d(TAG, "signIn: Success")
-                        launch { settingDataStore.login() }
-                        LoginEffect.SuccessSigIn(result.token)
-                    }
-                    is LoginResult.Error -> {
-                        Log.d(TAG, "signIn: Error")
-                        viewState = viewState.copy(progress = false)
-                        LoginEffect.Message(text = R.string.unknown_error)
-                    }
+            sideEffect = when (val result = loginUseCase(email, password)) {
+                is ResultWrapper.Success -> {
+                    launch { settingDataStore.login() }
+                    LoginEffect.SuccessSigIn(result.data.token)
                 }
-            } catch (e: Exception) {
-                Log.d(TAG, "signIn: Error ${e.localizedMessage}")
-                sideEffect = LoginEffect.Message(text = R.string.unknown_error)
-                viewState = viewState.copy(progress = false)
+                is ResultWrapper.Failure -> {
+                    viewState = viewState.copy(progress = false)
+                    LoginEffect.Message(text = R.string.unknown_error)
+                }
             }
         }
-    }
-
-    companion object {
-        private const val PASSWORD_PATTERN = ".{4,20}\$"
     }
 }

@@ -113,7 +113,6 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
                 when (effect) {
                     is ConfirmationEffect.Message -> {
                         Log.d(TAG, "observeSideEffects: ${effect.text}")
-                        //showSnackbar(effect.text)
                     }
                     is ConfirmationEffect.AuthError -> {
                         Log.d(TAG, "observeSideEffects: Error ${effect.exception.localizedMessage}")
@@ -163,7 +162,8 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
         }
 
         try {
-            startActivity(intent)
+            val chooserIntent = Intent.createChooser(intent, getString(R.string.select_email_app))
+            startActivity(chooserIntent)
         } catch (e: ActivityNotFoundException) {
             showToast(R.string.no_email_apps_found)
         }

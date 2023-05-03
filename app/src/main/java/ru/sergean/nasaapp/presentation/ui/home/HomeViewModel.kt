@@ -1,9 +1,7 @@
 package ru.sergean.nasaapp.presentation.ui.home
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import ru.sergean.nasaapp.TAG
+import ru.sergean.nasaapp.R
+import ru.sergean.nasaapp.data.base.ResultWrapper
 import ru.sergean.nasaapp.domain.images.FetchImagesUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
 import ru.sergean.nasaapp.presentation.ui.home.items.mapToImageItem
@@ -14,7 +12,6 @@ class HomeViewModel @Inject constructor(
 ) : BaseViewModel<HomeState, HomeAction, HomeEffect>(initialState = HomeState()) {
 
     override fun dispatch(action: HomeAction) {
-        Log.d(TAG, "Home - dispatch: $action")
         when (action) {
             is HomeAction.Refresh -> reduce(action)
             is HomeAction.ChangeQuery -> reduce(action)
@@ -24,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private fun reduce(action: HomeAction.Refresh) {
         when {
             viewState.progress -> {
-                sideEffect = HomeEffect.Message(text = "In process!")
+                sideEffect = HomeEffect.Message(text = R.string.in_process)
             }
             action.force -> {
                 fetchImages(query = viewState.query)
@@ -36,15 +33,16 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun reduce(action: HomeAction.ChangeQuery) {
-        if (viewState.progress) {
-            sideEffect = HomeEffect.Message(text = "In process!")
-        } else {
-            val query = action.query.dropWhile { it == ' ' }.dropLastWhile { it == ' ' }
-            Log.d(TAG, "reduce: $query")
-
-            if (query != viewState.query) {
-                viewState = viewState.copy(query = query)
-                fetchImages(viewState.query)
+        when {
+            viewState.progress -> {
+                sideEffect = HomeEffect.Message(text = R.string.in_process)
+            }
+            else -> {
+                val query = action.query.dropWhile { it == ' ' }.dropLastWhile { it == ' ' }
+                if (query != viewState.query) {
+                    viewState = viewState.copy(query = query)
+                    fetchImages(viewState.query)
+                }
             }
         }
     }
@@ -52,14 +50,15 @@ class HomeViewModel @Inject constructor(
     private fun fetchImages(query: String) {
         viewState = viewState.copy(progress = true)
         withViewModelScope {
-            viewState = try {
-                val images = fetchImagesUseCase.invoke(query)
-                Log.d(TAG, "fetchImages: ${images.size}")
-                viewState.copy(progress = false, images = images.map { it.mapToImageItem() })
-            } catch (e: Exception) {
-                sideEffect = HomeEffect.Message(text = "Unknown error")
-                Log.e(TAG, "HOME fetchImages:", e)
-                viewState.copy(progress = false)
+            viewState = when (val result = fetchImagesUseCase.invoke(query)) {
+                is ResultWrapper.Success -> {
+                    val images = result.data
+                    viewState.copy(progress = false, images = images.map { it.mapToImageItem() })
+                }
+                is ResultWrapper.Failure -> {
+                    sideEffect = HomeEffect.Message(text = R.string.unknown_error)
+                    viewState.copy(progress = false)
+                }
             }
         }
     }
