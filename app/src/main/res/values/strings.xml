@@ -42,7 +42,7 @@
     <string name="confirm_code">Confirm code…</string>
     <string name="sending_code">Sending a code to your phone number…</string>
     <string name="we_sent_code_to">We sent an SMS code to</string>
-    <string name="invalid_code">Invalid code</string>
+    <string name="invalid_code">Invalid code…</string>
     <string name="unknown_error">Unknown error. Please try again later.</string>
     <string name="in_process">In process</string>
     <string name="success_confirmation">Success confirmation</string>
@@ -72,4 +72,5 @@ The largest ring spans 7,000 times the diameter of the planet. The main rings ar
 
 The rings are named alphabetically in the order they were discovered. The main rings, working out from the planet, are known as C, B and A. The innermost is the extremely faint D ring, while the outermost to date, revealed in 2009, is so big that it could fit a billion Earths within it. The Cassini Division, a gap some 2,920 miles (4,700 km) wide, separates rings B and A.</string>
     <string name="select_email_app">Select email app</string>
+    <string name="try_again">Invalid code. Try again</string>
 </resources>

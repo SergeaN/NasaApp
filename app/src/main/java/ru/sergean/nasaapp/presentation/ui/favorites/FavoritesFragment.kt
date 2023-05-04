@@ -120,7 +120,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
     private fun navigateToDetailScreen(image: ImageModel) {
         val bundle = bundleOf(DetailFragment.ARG_IMAGE to image)
-        findNavController().navigate(R.id.action_favoritesFragment_to_detailFragment, bundle)
+        findNavController().navigate(R.id.action_favoritesFragment_to_detailFragment1, bundle)
     }
 
     private fun onFavoritesClick(item: FavoriteImageItem) {

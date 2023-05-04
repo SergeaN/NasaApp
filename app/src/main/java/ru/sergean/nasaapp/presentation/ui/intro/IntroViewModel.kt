@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.data.datastore.SettingDataStore
@@ -17,7 +19,14 @@ class IntroViewModel @Inject constructor(private val dataStore: SettingDataStore
         IntroItemData(imageId = R.drawable.planet_earth, textId = R.string.earth_text),
     )
 
-    var currentPosition: Int = 0
+    private val _currentPosition = MutableStateFlow(value = 0)
+
+    val currentPosition: StateFlow<Int>
+        get() = _currentPosition
+
+    fun updatePosition(newPosition: Int) {
+        _currentPosition.value = newPosition
+    }
 
     fun introShowed() {
         viewModelScope.launch(Dispatchers.IO) {

@@ -52,6 +52,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d(TAG, "onViewCreated: $this")
+
         binding.run {
             loginButton.setOnClickListener { viewModel.dispatch(LoginAction.SignIn) }
             registerButton.setOnClickListener { navigateToRegistration() }

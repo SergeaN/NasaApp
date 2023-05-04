@@ -121,14 +121,10 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
                         navigateToRegistration()
                     }
                     is ConfirmationEffect.InvalidCode -> {
-                        Log.d(TAG, "observeSideEffects: Invalid Code")
-
-                        showSnackbar(R.string.invalid_code)
+                        showSnackbar(R.string.try_again)
                         binding.codeInput.enteredCode = ""
                     }
                     is ConfirmationEffect.SuccessConfirmation -> {
-                        Log.d(TAG, "observeSideEffects: Success")
-
                         showSnackbar(R.string.success_confirmation)
                         navigateToApp()
                         callbacks?.destroyComponent()

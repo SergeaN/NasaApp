@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LoginScreenCallb
 
         lifecycleScope.launch {
             mainViewModel.mode.collect { startMode ->
-                Log.d(TAG, "onCreate: $startMode")
                 setupNavGraph(startMode)
                 cancel()
             }
@@ -106,7 +105,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), LoginScreenCallb
             networkViewModel.connectionState.flowWithLifecycle(lifecycle)
                 .debounce(timeoutMillis = 2000)
                 .collect { hasConnection ->
-                    Log.d(TAG, "observeInternetConnection: $hasConnection")
                     if (!hasConnection) {
                         Snackbar.make(
                             binding.root, R.string.no_internet_connection,

@@ -5,8 +5,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.databinding.FragmentIntroBinding
@@ -31,25 +35,36 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentPosition = savedInstanceState?.getInt(EXTRA_POSITION) ?: 0
+        val position = savedInstanceState?.getInt(EXTRA_POSITION) ?: 0
+        viewModel.updatePosition(position)
 
         binding.run {
             viewPager.adapter = IntroAdapter(viewModel.data, fragment = this@IntroFragment)
             dotsIndicator.attachTo(viewPager)
+            viewPager.onPageSelected { position -> viewModel.updatePosition(position) }
+        }
 
-            nextButton.setOnClickListener {
-                viewPager.setCurrentItem(viewModel.currentPosition + 1, true)
-            }
+        observePosition()
+    }
 
-            viewPager.onPageSelected { position ->
-                viewModel.currentPosition = position
-
-                if (position == viewModel.data.size - 1) {
-                    nextButton.text = getString(R.string.continue_word)
-                    nextButton.setOnClickListener {
-                        viewModel.introShowed()
-                        navigateToLogin()
+    private fun observePosition() {
+        lifecycleScope.launch {
+            viewModel.currentPosition.flowWithLifecycle(lifecycle).collect { position ->
+                binding.run {
+                    val (text, onClick) = if (position == viewModel.data.lastIndex) {
+                        val navigateToLogin = {
+                            viewModel.introShowed()
+                            navigateToLogin()
+                        }
+                        getString(R.string.continue_word) to navigateToLogin
+                    } else {
+                        val changePosition = {
+                            viewPager.setCurrentItem(position + 1, true)
+                        }
+                        getString(R.string.next) to changePosition
                     }
+                    nextButton.text = text
+                    nextButton.setOnClickListener { onClick() }
                 }
             }
         }
@@ -57,7 +72,7 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(EXTRA_POSITION, viewModel.currentPosition)
+        outState.putInt(EXTRA_POSITION, viewModel.currentPosition.value)
     }
 
     private fun navigateToLogin() {

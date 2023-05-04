@@ -70,7 +70,7 @@
                 android:gravity="end"
                 android:maxLines="1"
                 android:text="@string/image_created"
-                android:textColor="@color/material_dynamic_primary0"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <TextView
@@ -81,7 +81,7 @@
                 android:fontFamily="@font/noto_sans_medium_italic"
                 android:gravity="end"
                 android:maxLines="1"
-                android:textColor="@color/material_dynamic_primary0"
+                android:textColor="@color/black"
                 android:textSize="14sp"
                 tools:text="@string/date_placeholder" />
 
