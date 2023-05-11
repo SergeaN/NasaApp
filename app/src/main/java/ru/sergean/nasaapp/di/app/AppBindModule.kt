@@ -16,7 +16,7 @@ import javax.inject.Singleton
 interface AppBindModule {
 
     @Binds
-    fun bindImagesRemoteDataSource(dataSource: MockImagesRemoteDataSource): ImagesRemoteDataSource
+    fun bindImagesRemoteDataSource(dataSource: NasaService): ImagesRemoteDataSource
 
     @Binds
     fun bindImagesLocalDataSource(dataSource: ImageLocalDataSourceImpl): ImagesLocalDataSource

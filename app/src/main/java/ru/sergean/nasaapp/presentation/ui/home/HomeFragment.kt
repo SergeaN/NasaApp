@@ -2,7 +2,6 @@ package ru.sergean.nasaapp.presentation.ui.home
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.core.os.bundleOf
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.data.images.toImageModel
@@ -71,7 +69,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun observeState() {
         lifecycleScope.launch {
             viewModel.observeState().flowWithLifecycle(lifecycle).collect { state ->
-                Log.d(TAG, "Home - observeState: $state")
                 when {
                     state.progress -> {
                         binding.imageSwipeContainer.isRefreshing = true
@@ -92,7 +89,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun observeSideEffects() {
         lifecycleScope.launch {
             viewModel.observeSideEffect().flowWithLifecycle(lifecycle).collect { effect ->
-                Log.d(TAG, "Home - observeSideEffects: $effect")
                 when (effect) {
                     is HomeEffect.Message -> showSnackbar(effect.text)
                 }

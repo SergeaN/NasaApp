@@ -1,11 +1,9 @@
 package ru.sergean.nasaapp.presentation.ui.confirmation
 
 import android.app.Activity
-import android.util.Log
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.auth.RegistrationLogService
 import ru.sergean.nasaapp.data.base.ResultWrapper
 import ru.sergean.nasaapp.data.datastore.SettingDataStore
@@ -34,7 +32,6 @@ class ConfirmationViewModel(
     }
 
     override fun dispatch(action: ConfirmationAction) {
-        Log.d(TAG, "dispatch: $action")
         when (action) {
             is ConfirmationAction.VerifyNumber -> reduce(action)
             is ConfirmationAction.ResendCode -> reduce(action)
@@ -108,22 +105,16 @@ class ConfirmationViewModel(
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-            Log.d(TAG, "onVerificationAutoCompleted: $credential")
-
             signInWithPhoneAuthCredential(credential)
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
-            Log.d(TAG, "onVerificationFailed", e)
-
             sideEffect = ConfirmationEffect.AuthError(Exception(e))
         }
 
         override fun onCodeSent(
             verificationId: String, token: PhoneAuthProvider.ForceResendingToken
         ) {
-            Log.d(TAG, "onCodeSent:${verificationId.take(n = 10)}")
-
             storedVerificationId = verificationId
             resendToken = token
 
@@ -134,7 +125,6 @@ class ConfirmationViewModel(
     }
 
     private fun verifyPhoneNumberWithCode(storedVerificationId: String, code: String) {
-        Log.d(TAG, "verifyPhoneNumberWithCode: ")
         val credential = PhoneAuthProvider.getCredential(storedVerificationId, code)
         signInWithPhoneAuthCredential(credential)
     }
@@ -143,20 +133,14 @@ class ConfirmationViewModel(
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
             when {
                 task.isSuccessful -> {
-                    Log.d(TAG, "Validation: Success")
-
                     logService.userConfirmed()
                     register()
                 }
                 task.exception is FirebaseAuthInvalidCredentialsException -> {
-                    Log.d(TAG, "Validation: Invalid Code")
-
                     viewState = viewState.copy(progress = false)
                     sideEffect = ConfirmationEffect.InvalidCode
                 }
                 else -> {
-                    Log.d(TAG, "Validation: Error ${task.exception?.localizedMessage}")
-
                     sideEffect = ConfirmationEffect.AuthError(Exception(task.exception))
                 }
             }

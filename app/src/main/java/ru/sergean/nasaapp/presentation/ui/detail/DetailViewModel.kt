@@ -1,6 +1,7 @@
 package ru.sergean.nasaapp.presentation.ui.detail
 
 import kotlinx.coroutines.CoroutineScope
+import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.data.base.ResultWrapper
 import ru.sergean.nasaapp.domain.images.AddToFavoritesUseCase
 import ru.sergean.nasaapp.domain.images.GetImageUseCase
@@ -14,13 +15,26 @@ class DetailViewModel(
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
 ) : BaseViewModel<DetailState, DetailAction, DetailEffect>(initialState = DetailState()) {
 
-    init {
-        getImage(nasaId)
-    }
-
     override fun dispatch(action: DetailAction) {
         when (action) {
+            is DetailAction.GetImage -> reduce(action)
             is DetailAction.ChangeSaving -> reduce(action)
+        }
+    }
+
+    private fun reduce(action: DetailAction.GetImage) {
+        if (viewState.progress) {
+            sideEffect = DetailEffect.Message(text = R.string.in_process)
+        } else {
+            getImage(nasaId)
+        }
+    }
+
+    private fun reduce(action: DetailAction.ChangeSaving) {
+        if (viewState.imageSaved) {
+            changeSaving { removeFromFavoritesUseCase(nasaId) }
+        } else {
+            changeSaving { addToFavoritesUseCase(nasaId) }
         }
     }
 
@@ -39,15 +53,7 @@ class DetailViewModel(
             }
         }
     }
-
-    private fun reduce(action: DetailAction.ChangeSaving) {
-        if (viewState.imageSaved) {
-            changeSaving { removeFromFavoritesUseCase(nasaId) }
-        } else {
-            changeSaving { addToFavoritesUseCase(nasaId) }
-        }
-    }
-
+    
     private fun changeSaving(changeAction: suspend CoroutineScope.() -> Unit) {
         viewState = viewState.copy(progress = true)
         withViewModelScope {

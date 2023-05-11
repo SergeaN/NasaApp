@@ -1,6 +1,5 @@
 package ru.sergean.nasaapp.presentation.ui.home.items
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,7 +7,6 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.transform.RoundedCornersTransformation
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.databinding.ItemImageBinding
 import ru.sergean.nasaapp.presentation.ui.base.adapter.BaseViewHolder

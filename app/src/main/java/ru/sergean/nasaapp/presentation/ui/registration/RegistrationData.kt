@@ -44,6 +44,5 @@ sealed interface RegistrationAction : Action {
 
 sealed interface RegistrationEffect : Effect {
     data class Message(@StringRes val text: Int) : RegistrationEffect
-    data class SuccessSignUp(val token: String) : RegistrationEffect
 }
 

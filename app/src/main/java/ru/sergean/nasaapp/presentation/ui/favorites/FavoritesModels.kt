@@ -15,6 +15,7 @@ data class FavoritesState(
 sealed interface FavoritesAction : Action {
     object  Refresh : FavoritesAction
     data class ChangeQuery(val query: String) : FavoritesAction
+    data class AddToFavorites(val nasaId: String): FavoritesAction
     data class RemoveFromFavorites(val nasaId: String): FavoritesAction
 }
 

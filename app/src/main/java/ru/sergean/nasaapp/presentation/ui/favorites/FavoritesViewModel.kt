@@ -2,6 +2,7 @@ package ru.sergean.nasaapp.presentation.ui.favorites
 
 import ru.sergean.nasaapp.R
 import ru.sergean.nasaapp.data.base.ResultWrapper
+import ru.sergean.nasaapp.domain.images.AddToFavoritesUseCase
 import ru.sergean.nasaapp.domain.images.FetchFavoriteImagesUseCase
 import ru.sergean.nasaapp.domain.images.RemoveFromFavoritesUseCase
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModel
@@ -10,6 +11,7 @@ import javax.inject.Inject
 
 class FavoritesViewModel @Inject constructor(
     private val fetchImagesUseCase: FetchFavoriteImagesUseCase,
+    private val addToFavoritesUseCase: AddToFavoritesUseCase,
     private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
 ) : BaseViewModel<FavoritesState, FavoritesAction, FavoritesEffect>(
     initialState = FavoritesState()
@@ -19,6 +21,7 @@ class FavoritesViewModel @Inject constructor(
         when (action) {
             is FavoritesAction.Refresh -> reduce(action)
             is FavoritesAction.ChangeQuery -> reduce(action)
+            is FavoritesAction.AddToFavorites -> reduce(action)
             is FavoritesAction.RemoveFromFavorites -> reduce(action)
         }
     }
@@ -39,6 +42,18 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
+    private fun reduce(action: FavoritesAction.AddToFavorites) {
+        withViewModelScope {
+            addToFavoritesUseCase(action.nasaId)
+        }
+    }
+
+    private fun reduce(action: FavoritesAction.RemoveFromFavorites) {
+        withViewModelScope {
+            removeFromFavoritesUseCase(action.nasaId)
+        }
+    }
+
     private fun fetchImages(query: String) {
         viewState = viewState.copy(progress = true)
         withViewModelScope {
@@ -55,16 +70,6 @@ class FavoritesViewModel @Inject constructor(
                 is ResultWrapper.Failure -> {
                     viewState.copy(progress = false)
                 }
-            }
-        }
-    }
-
-    private fun reduce(action: FavoritesAction.RemoveFromFavorites) {
-        withViewModelScope {
-            removeFromFavoritesUseCase(action.nasaId)
-            val newImages = viewState.images.filter { it.nasaId != action.nasaId }
-            if (newImages.size != viewState.images.size) {
-                viewState = viewState.copy(images = newImages)
             }
         }
     }

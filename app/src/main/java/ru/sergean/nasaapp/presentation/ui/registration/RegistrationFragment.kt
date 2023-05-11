@@ -2,7 +2,6 @@ package ru.sergean.nasaapp.presentation.ui.registration
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
@@ -12,10 +11,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
-import dagger.Lazy
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.databinding.FragmentRegistrationBinding
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModelFactory
 import ru.sergean.nasaapp.presentation.ui.confirmation.ConfirmationFragment
@@ -102,7 +99,6 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
     private fun observeState() {
         lifecycleScope.launch {
             viewModel.observeState().flowWithLifecycle(lifecycle).collect { state ->
-                Log.d(TAG, "observeState: $state")
                 binding.run {
                     nameInput.isErrorEnabled = state.nameError != null
                     emailInput.isErrorEnabled = state.emailError != null
@@ -125,10 +121,6 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
             viewModel.observeSideEffect().flowWithLifecycle(lifecycle).collect { effect ->
                 when (effect) {
                     is RegistrationEffect.Message -> {
-                        Log.d(TAG, "observeSideEffects: Message ${effect.text}")
-                    }
-                    is RegistrationEffect.SuccessSignUp -> {
-                        Log.d(TAG, "observeSideEffects: SuccessSignUp ${effect.token}")
                     }
                 }
             }
