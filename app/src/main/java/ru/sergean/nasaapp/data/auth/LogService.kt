@@ -4,7 +4,6 @@ import android.util.Log
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import ru.sergean.nasaapp.di.app.AppScope
-import ru.sergean.nasaapp.di.login.LoginScope
 import java.util.*
 import javax.inject.Inject
 
@@ -54,9 +53,9 @@ private fun DatabaseReference.setValueWithListen(
     value: String, valueName: String,
 ) {
     setValue(value).addOnCompleteListener {
-        Log.d(TAG, "put $valueName is COMPLETE")
+        //Log.d(TAG, "put $valueName is COMPLETE")
     }.addOnCanceledListener {
-        Log.d(TAG, "put $valueName is CANCEL")
+        //Log.d(TAG, "put $valueName is CANCEL")
     }
 }
 
@@ -64,8 +63,8 @@ private fun DatabaseReference.setValueWithListen(
     value: Boolean, valueName: String,
 ) {
     setValue(value).addOnCompleteListener {
-        Log.d(TAG, "put $valueName is COMPLETE")
+        //Log.d(TAG, "put $valueName is COMPLETE")
     }.addOnCanceledListener {
-        Log.d(TAG, "put $valueName is CANCEL")
+        //Log.d(TAG, "put $valueName is CANCEL")
     }
 }

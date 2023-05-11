@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
@@ -21,7 +20,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.fraggjkee.smsconfirmationview.SmsConfirmationView
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.databinding.FragmentConfirmationBinding
 import ru.sergean.nasaapp.presentation.ui.main.LoginScreenCallbacks
 import ru.sergean.nasaapp.presentation.ui.main.NetworkViewModel
@@ -68,8 +66,6 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d(TAG, "onViewCreated: $registrationData")
-
         binding.run {
             numberTextView.text = formattedPhoneNumber
 
@@ -89,7 +85,6 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
     private fun observeState() {
         lifecycleScope.launch {
             viewModel.observeState().flowWithLifecycle(lifecycle).collect { state ->
-                Log.d(TAG, "observeState: $state")
                 binding.run {
                     state.message?.let { confirmInfoText.text = getString(it) }
                     codeInput.isEnabled = !state.progress
@@ -109,14 +104,10 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
     private fun observeSideEffects() {
         lifecycleScope.launch {
             viewModel.observeSideEffect().flowWithLifecycle(lifecycle).collect { effect ->
-                Log.d(TAG, "observeSideEffects: $effect")
                 when (effect) {
                     is ConfirmationEffect.Message -> {
-                        Log.d(TAG, "observeSideEffects: ${effect.text}")
                     }
                     is ConfirmationEffect.AuthError -> {
-                        Log.d(TAG, "observeSideEffects: Error ${effect.exception.localizedMessage}")
-
                         showSnackbar(R.string.unknown_error)
                         navigateToRegistration()
                     }

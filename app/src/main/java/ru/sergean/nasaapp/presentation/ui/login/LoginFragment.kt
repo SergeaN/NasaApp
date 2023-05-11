@@ -2,7 +2,6 @@ package ru.sergean.nasaapp.presentation.ui.login
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
@@ -16,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.databinding.FragmentLoginBinding
 import ru.sergean.nasaapp.presentation.ui.base.arch.BaseViewModelFactory
 import ru.sergean.nasaapp.presentation.ui.home.HomeFragment
@@ -52,8 +50,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d(TAG, "onViewCreated: $this")
-
         binding.run {
             loginButton.setOnClickListener { viewModel.dispatch(LoginAction.SignIn) }
             registerButton.setOnClickListener { navigateToRegistration() }
@@ -80,10 +76,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun observeState() {
-        Log.d(TAG, "observeState Login")
         lifecycleScope.launch {
             viewModel.observeState().flowWithLifecycle(lifecycle).collect { state ->
-                Log.d(TAG, "observeState: $state")
                 binding.run {
                     emailInput.isErrorEnabled = state.emailError != null
                     passwordInput.isErrorEnabled = state.passwordError != null

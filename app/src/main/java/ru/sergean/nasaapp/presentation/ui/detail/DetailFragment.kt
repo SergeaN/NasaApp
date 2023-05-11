@@ -2,7 +2,6 @@ package ru.sergean.nasaapp.presentation.ui.detail
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,7 +13,6 @@ import coil.transform.RoundedCornersTransformation
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.databinding.FragmentDetailBinding
@@ -44,6 +42,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         observeState()
         observeSideEffects()
 
+        viewModel.dispatch(DetailAction.GetImage)
+
         binding.run {
             detailImage.load(data = image.imageUrl) {
                 crossfade(enable = true)
@@ -59,8 +59,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private fun observeState() {
         lifecycleScope.launch {
             viewModel.observeState().flowWithLifecycle(lifecycle).collect {
-                Log.d(TAG, "observeState: $it")
-
                 val stateImage = it.image
                 binding.run {
                     favoriteButton.isEnabled = it.progress.not()
@@ -78,7 +76,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private fun observeSideEffects() {
         lifecycleScope.launch {
             viewModel.observeSideEffect().flowWithLifecycle(lifecycle).collect {
-                Log.d(TAG, "observeSideEffects: $it")
                 when (it) {
                     is DetailEffect.Message -> showSnackbar(it.text)
                 }

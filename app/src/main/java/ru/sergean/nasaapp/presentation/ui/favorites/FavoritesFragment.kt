@@ -2,7 +2,6 @@ package ru.sergean.nasaapp.presentation.ui.favorites
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -16,7 +15,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.sergean.nasaapp.R
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.appComponent
 import ru.sergean.nasaapp.data.images.ImageModel
 import ru.sergean.nasaapp.data.images.toImageModel
@@ -66,7 +64,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private fun observeState() {
         lifecycleScope.launch {
             viewModel.observeState().flowWithLifecycle(lifecycle).collect { state ->
-                Log.d(TAG, "observeState: $state")
                 when {
                     state.progress -> {
                         binding.run {
@@ -96,7 +93,6 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private fun observeSideEffects() {
         lifecycleScope.launch {
             viewModel.observeSideEffect().flowWithLifecycle(lifecycle).collect {
-                Log.d(TAG, "observeSideEffects: $it")
                 when (it) {
                     is FavoritesEffect.Message -> showSnackbar(it.text)
                 }
@@ -124,6 +120,8 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun onFavoritesClick(item: FavoriteImageItem) {
+        viewModel.dispatch(FavoritesAction.RemoveFromFavorites(item.nasaId))
+
         val removeIndex = items.indexOf(item)
         items.removeAt(removeIndex)
         fingerprintAdapter?.submitList(items.toList())
@@ -134,17 +132,11 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     private fun showRestoreSnackbar(position: Int, item: FavoriteImageItem) {
         Snackbar.make(binding.imageRecyclerView, R.string.image_was_removed, Snackbar.LENGTH_LONG)
             .setAction(R.string.undo) {
+                viewModel.dispatch(FavoritesAction.AddToFavorites(item.nasaId))
+
                 items.add(position, item)
                 fingerprintAdapter?.submitList(items.toList())
             }
-            .addCallback(object : Snackbar.Callback() {
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    super.onDismissed(transientBottomBar, event)
-                    if (event != DISMISS_EVENT_ACTION) {
-                        viewModel.dispatch(FavoritesAction.RemoveFromFavorites(item.nasaId))
-                    }
-                }
-            })
             .show()
     }
 }

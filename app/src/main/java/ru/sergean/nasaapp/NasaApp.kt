@@ -12,8 +12,6 @@ import ru.sergean.nasaapp.di.app.AppComponent
 import ru.sergean.nasaapp.di.app.FirebaseDependencies
 import ru.sergean.nasaapp.di.login.LoginComponent
 
-const val TAG = "debig"
-
 class NasaApp() : Application(), FirebaseDependencies {
 
     override val firebaseAuth: FirebaseAuth

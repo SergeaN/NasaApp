@@ -1,15 +1,13 @@
 package ru.sergean.nasaapp.data.images
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.sergean.nasaapp.TAG
 import ru.sergean.nasaapp.data.base.ResultWrapper
 import ru.sergean.nasaapp.data.images.local.ImagesLocalDataSource
 import ru.sergean.nasaapp.data.images.local.toImageLocalModel
-import ru.sergean.nasaapp.data.images.remote.mapToImageRemote
 import ru.sergean.nasaapp.data.images.remote.ImagesRemoteDataSource
+import ru.sergean.nasaapp.data.images.remote.mapToImageRemote
 import ru.sergean.nasaapp.di.app.AppScope
 import javax.inject.Inject
 
@@ -47,7 +45,6 @@ class ImageRepository @Inject constructor(
             val images = localDataSource.fetchFavoriteImages(query).map { it.toImageModel() }
             ResultWrapper.Success(data = images)
         } catch (e: Exception) {
-            Log.e(TAG, "fetchFavoriteImages:", e)
             ResultWrapper.Failure(message = e.message ?: "Error")
         }
     }
@@ -56,7 +53,7 @@ class ImageRepository @Inject constructor(
         try {
             localDataSource.addToFavorites(nasaId)
         } catch (e: Exception) {
-            Log.e(TAG, "addToFavorites:", e)
+            //
         }
     }
 
@@ -64,7 +61,7 @@ class ImageRepository @Inject constructor(
         try {
             localDataSource.removeFromFavorites(nasaId)
         } catch (e: Exception) {
-            Log.e(TAG, "removeFromFavorites:", e)
+            //
         }
     }
 
@@ -83,9 +80,8 @@ class ImageRepository @Inject constructor(
             launch {
                 try {
                     localDataSource.saveImages(images.map { it.toImageLocalModel() })
-                    Log.d(TAG, "saveImages: ")
                 } catch (e: Exception) {
-                    Log.e(TAG, "saveImages:", e)
+                    //
                 }
             }
         }
